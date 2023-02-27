@@ -7,7 +7,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
-contract BluebirdCallOptions {
+contract BluebirdPutOptions {
     // Price feed interface
     AggregatorV3Interface internal nftFeed;
     IERC20 public nftToken;
@@ -51,8 +51,8 @@ contract BluebirdCallOptions {
         ) = nftFeed.latestRoundData();
         // If the round is not complete yet, timestamp is 0
         require(timeStamp > 0, "Round not complete");
-        //Price should never be negative thus cast int to unit is ok
-        //Price is 8 decimal places and will require 1e10 correction later to 18 places
+        // Price should never be negative thus cast int to unit is ok
+        // Price is 8 decimal places and will require 1e10 correction later to 18 places
         return uint(price);
     }
     
@@ -61,7 +61,7 @@ contract BluebirdCallOptions {
         nftPrice = getNftPrice();
     }
     
-    //Allows user to write a covered call option
+    //Allows user to write a covered put option
     //Takes which token, a strike price(USD per token w/18 decimal places), premium(same unit as token), expiration time(unix) and how many tokens the contract is for
     function writeOption(uint strike, uint premium, uint expiry, uint tknAmt) public {
         updatePrices();
@@ -80,7 +80,7 @@ contract BluebirdCallOptions {
         
     }
     
-    //Purchase a call option, needs desired token, ID of option and payment
+    //Purchase a put option, needs desired token, ID of option and payment
     function buyOption(uint ID) public {
         updatePrices();
         require(!nftOpts[ID].canceled && nftOpts[ID].expiry > block.timestamp, "Option is canceled/expired and cannot be bought");
@@ -90,7 +90,7 @@ contract BluebirdCallOptions {
     
     }
     
-    //Exercise your call option, needs desired token, ID of option and payment
+    //Exercise your put option, needs ID of option and payment
     function exercise(uint ID) public payable {
         //If not expired and not already exercised, allow option owner to exercise
         //To exercise, the strike value*amount equivalent paid to writer (from buyer) and amount of tokens in the contract paid to buyer

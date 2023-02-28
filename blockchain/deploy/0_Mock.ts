@@ -5,11 +5,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  // Chain Dependent Settings
-  let contract = await deploy('MockUSDC', {
+  await deploy('MockUSDC', {
     from: deployer,
+    log: true,
+    args: [],
+  });
+
+  await deploy('MockBBYC', {
+    from: deployer,
+    log: true,
     args: [],
   });
 };
 
-module.exports.tags = ['MockUSDC'];
+module.exports.tags = ['Mock'];

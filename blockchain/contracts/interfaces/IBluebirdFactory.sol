@@ -43,6 +43,21 @@ interface IBluebirdFactory {
         uint256 _expiry
     );
 
+    /**
+     * @notice Create a New Call and Put Options for the epoch
+     * @param _collectionAddress Address of the NFT Collection
+     * @dev Can only create when previous epoch has expired
+     * @dev Increment epoch
+     * @dev Must be whitelisted NFT collection
+     */
+    function createOptions(address _collectionAddress) external;
+
+    /**
+     * @notice Get current epoch for specified collection address
+     * @param _collectionAddress Collection address
+     */
+    function getEpoch(address _collectionAddress) external view;
+
 
     
 }

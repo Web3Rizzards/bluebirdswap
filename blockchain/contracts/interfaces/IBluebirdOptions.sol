@@ -42,7 +42,7 @@ interface IBluebirdOptions {
      * @param _orderIndex Order Index
      * @dev Must be owner of order
      */
-    function claim(uint8 _orderIndex) external;
+    function exercise(uint256 _orderIndex) external;
 
     /**
      * @notice Get strike prices of the current contract    

@@ -36,7 +36,7 @@ library BluebirdLibrary {
 
     /**
      * Square root function
-     * @param x 
+     * @param x Input x
      * @return Square root of `x`
      */
     function sqrt(uint256 x) internal pure returns (uint256) {

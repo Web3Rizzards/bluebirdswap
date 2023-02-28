@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
+import { IBB20 } from "./IBB20.sol";
 
 /// @title IBluebird Grinder 
 /// @notice The Bluebird Grinder will break down an NFT into shards
@@ -33,5 +34,11 @@ interface IBluebirdGrinder {
      * @param _collectionAddress Address of the NFT collection to be whitelisted
      */
     function whitelistNFT(address _collectionAddress) external;
+
+    /**
+     * @notice Check if BB20 token exists given collection address
+     * @param _collectionAddress Address of the NFT collection
+     */
+    function getTokenFromCollection(address _collectionAddress) external view returns (IBB20);
     
 }

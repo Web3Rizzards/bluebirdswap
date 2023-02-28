@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IOptionPricing.sol";
 
+import "./libraries/BluebirdMath.sol";
 contract BluebirdOptions is Ownable, ReentrancyGuard {
     // Price feed interface
     AggregatorV3Interface internal nftFeed;

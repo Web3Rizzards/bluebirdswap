@@ -7,11 +7,12 @@ import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./interfaces/IOptionPricing.sol";
+import { IOptionPricing } from  "./interfaces/IOptionPricing.sol";
+import { IBluebirdOptions } from  "./interfaces/IBluebirdOptions.sol";
+import { BluebirdMath } from "./libraries/BluebirdMath.sol";
 
-import "./libraries/BluebirdMath.sol";
 
-contract BluebirdOptions is Ownable, ReentrancyGuard {
+contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     // Price feed interface
     AggregatorV3Interface internal nftFeed;
 
@@ -127,10 +128,9 @@ contract BluebirdOptions is Ownable, ReentrancyGuard {
         }
     }
 
-    // View premium of option
     /**
      * @notice Get premium of an option
-     * @param _id 
+     * @param _id Id of contract
      */
     function viewPremium(uint256 _id) public view returns (uint256) {
         uint256 _nftPrice = getNftPrice();
@@ -148,11 +148,11 @@ contract BluebirdOptions is Ownable, ReentrancyGuard {
         require(nftOpts[_id].expiry < block.timestamp, "Option is expired and cannot be bought");
         uint256 _expiry = nftOpts[_id].expiry;
         uint256 _premium;
-        uint256 _baseIv = computeStandardDeviation(prices);
+        uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
         if (_isPut) {
-            _premium = optionPricing.getOptionPrice(true, _expiry, nftOpts[_id].strike, nftTokenPrice, baseIv);
+            _premium = optionPricing.getOptionPrice(true, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
         } else {
-            _premium = optionPricing.getOptionPrice(false, _expiry, nftOpts[_id].strike, nftTokenPrice, baseIv);
+            _premium = optionPricing.getOptionPrice(false, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
         }
         // If premium is not within 1% of view premium, revert
         require(_premium >= _viewPremium - (_viewPremium / 100), "Premium is not within 1% of view premium");
@@ -180,22 +180,22 @@ contract BluebirdOptions is Ownable, ReentrancyGuard {
         uint256 numOptions,
         uint256 spotPrice,
         uint256 exerciseCost
-    ) public view returns (int256) {
-        int256 pnl = 0;
+    ) public view returns (uint256) {
+        uint256 pnl = 0;
 
         // Calculate profit or loss on the option position
         if (isPut) {
             if (spotPrice < exercisePrice) {
-                pnl = int256(exercisePrice - spotPrice) * int256(numOptions);
+                pnl = uint256(exercisePrice - spotPrice) * uint256(numOptions);
             }
         } else {
             if (spotPrice > exercisePrice) {
-                pnl = int256(spotPrice - exercisePrice) * int256(numOptions);
+                pnl = uint256(spotPrice - exercisePrice) * uint256(numOptions);
             }
         }
 
         // Subtract transaction costs
-        pnl -= int256(exerciseCost) * int256(numOptions);
+        pnl -= uint256(exerciseCost) * uint256(numOptions);
 
         return pnl;
     }

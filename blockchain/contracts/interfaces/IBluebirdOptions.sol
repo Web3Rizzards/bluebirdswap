@@ -10,29 +10,27 @@ interface IBluebirdOptions {
 
     /**
      * @notice Emitted when an option is bought
-     * @param _buyer Buyer's address
+     * @param _user User's address
      * @param _order Order Index
      * @param _amount Lots purchased
      * @param _strikePrice Strike price of purchase
      * @param _premium Premium paid
      */
-    event Bought(address indexed _buyer, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium);
+    event Bought(address indexed _user, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium);
 
 
     /**
      * @notice Emitted when a user claims profits
-     * @param _buyer Buyer's address
+     * @param _user User's address
      * @param _order Order Index
-     * @param _amount Lots purchased
-     * @param _strikePrice Strike price of purchase
-     * @param _premium Premium paid
+     * @param _profits User's profits
      */
-    event Bought(address indexed _buyer, uint256 indexed _order, uint256 _profits);
+    event Claimed(address indexed _user, uint256 indexed _order, uint256 _profits);
 
     /**
      * @notice Buy an option
-     * @param _strikeIndex 
-     * @param _amount 
+     * @param _strikeIndex Index of the strike price
+     * @param _amount amount of lots to buy
      * @dev Option must have started
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
@@ -41,8 +39,7 @@ interface IBluebirdOptions {
 
     /**
      * @notice Claim profits, if any
-     * @param _strikeIndex 
-     * @param _amount 
+     * @param _orderIndex Order Index
      * @dev Must be owner of order
      */
     function claim(uint8 _orderIndex) external;

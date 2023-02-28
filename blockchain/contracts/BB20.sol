@@ -2,38 +2,41 @@
 pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./interfaces/IBB20.sol";
 
-contract BB20 is ERC20 {
-    event Minted(address to, uint256 amount);
+/// @title BB20 - Fractionalized NFT Token
+/// @dev Only can be issued by the BluebirdGrinder
+contract BB20 is IBB20, ERC20 {
     
-    address public factory;
+    address public grinder;
 
-    modifier onlyFactory {
+    modifier onlyGrinder {
         _isFactory();
         _;
     }
     
-    constructor(string memory _name, string memory _symbol, address _factory) ERC20(_name, _symbol) {
-        factory = _factory;
+    constructor(string memory _name, string memory _symbol, address _grinder) ERC20(_name, _symbol) {
+        grinder = _grinder;
+    }
+
+
+    /**
+     * @dev Mint BB20 Tokens
+     */
+    function mint(address _receipient, uint256 _amount) external onlyGrinder {
+        _mint(_receipient, _amount);
     }
 
     /**
      * @notice  Burn `amount` tokens and decreasing the total supply.
      * @param amount Amount of tokens to burn
      */
-    function burn(uint256 amount) external onlyFactory returns (bool)  {
+    function burn(uint256 amount) external override onlyGrinder returns (bool)  {
         _burn(_msgSender(), amount);
         return true;
     }
 
-    /**
-     * @dev Mint BB20 Tokens
-     */
-    function mint(address _receipient, uint256 _amount) external onlyFactory {
-        _mint(_receipient, _amount);
-    }
-
-    function _isFactory() internal view returns (bool) {
-        require (msg.sender == factory, "BB20: Only factory allowed");
+    function _isFactory() internal view {
+        require (msg.sender == grinder, "BB20: Only grinder allowed");
     }
 }

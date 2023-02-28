@@ -10,9 +10,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IOptionPricing.sol";
 
 import "./libraries/BluebirdMath.sol";
+
 contract BluebirdOptions is Ownable, ReentrancyGuard {
     // Price feed interface
     AggregatorV3Interface internal nftFeed;
+
+    // Fractionalized NFT
     IERC20 public nftToken;
     uint nftPrice;
     uint nftTokenPrice;
@@ -125,6 +128,10 @@ contract BluebirdOptions is Ownable, ReentrancyGuard {
     }
 
     // View premium of option
+    /**
+     * @notice Get premium of an option
+     * @param _id 
+     */
     function viewPremium(uint256 _id) public view returns (uint256) {
         uint256 _nftPrice = getNftPrice();
         return optionPricing.getOptionPrice(false, nftOpts[_id].expiry, nftOpts[_id].strike, _nftPrice, 0);

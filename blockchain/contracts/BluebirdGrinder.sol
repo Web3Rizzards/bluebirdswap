@@ -1,56 +1,50 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
 import "./interfaces/IBluebirdGrinder.sol";
-import "./BB20.sol";
+import {BB20} from "./BB20.sol";
 
-contract BluebirdFactory is IBluebirdGrinder, Ownable {
+// TODO: Make contract compile
 
+
+contract BluebirdGrinder is IBluebirdGrinder, Ownable {
     // 1 NFT = 1 million BB20 tokens
     uint256 public constant FRACTIONALISED_AMOUNT = 1000000 ether;
 
+    // Mapping of collection address to enumerable token Ids
+    mapping(address => EnumerableSet.UintSet) internal collectionToTokenIds;
+    mapping(address => BB20) public nftAddressToTokenAddress;
+
     constructor() {}
 
-    /**
-     * @notice Create a New Call Option
-     * @param _nftFeed Chainlink Floor Price Feed
-     * @param _collectionAddress Collection Address
-     */
-    function createNewOpt(address _nftFeed, address _collectionAddress) public onlyOwner {
-        require(nftAddressToTokenAddress[_collectionAddress] != address(0), "NFT Token not created");
-        // Get current floor price of NFT from Chainlink
-        AggregatorV3Interface nftFeed = AggregatorV3Interface(_nftFeed);
-        (uint80 roundID, int price, uint startedAt, uint timeStamp, uint80 answeredInRound) = nftFeed.latestRoundData();
-        address _nftToken = nftAddressToTokenAddress[_collectionAddress];
-        BluebirdCallOptions call = new BluebirdCallOptions(_nftFeed, _nftToken, controller, optionPricing);
-        callArray.push(call);
-    }
 
-    function createNewPut(
-        address _nftFeed,
-        address _nftToken,
-        uint256[] calldata _strikePrices,
-        uint256 _premium,
-        uint256 _expiry
-    ) public onlyOwner {
-        BluebirdPutOptions put = new BluebirdPutOptions(_nftFeed, _nftToken, _strikePrices, _premium, _expir);
-        putArray.push(put);
-    }
-
-    function fractionalise(address _collectionAddress, uint256 _tokenId) external {
+    function fractionalizeNFT(
+        address _collectionAddress,
+        uint256 _tokenId
+    ) external override {
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require transfer of NFT to this contract
-        require(IERC721(_collectionAddress).transferFrom(msg.sender, address(this), _tokenId), "Transfer failed");
+        IERC721(_collectionAddress).transferFrom(msg.sender, address(this),_tokenId);
+        
         // Add token id to enumerable set
-        collectionToTokenIds[_collectionAddress].add(_tokenId);
-        string memory _name = IERC721(_collectionAddress).name();
-        string memory _symbol = IERC721(_collectionAddress).symbol();
+        // collectionToTokenIds[_collectionAddress].add(_tokenId);
+
+        string memory _name = concatenate(
+            "BB Fractionalized ",
+            IERC721(_collectionAddress).name()
+        );
+        string memory _symbol = concatenate(
+            "bb",
+            IERC721(_collectionAddress).symbol()
+        );
         // Create new BB20 contract
         BB20 nftToken = new BB20(_name, _symbol, address(this));
-        nftTokenArray.push(nftToken);
+
         // Map collection address to BB20 address
         nftAddressToTokenAddress[_collectionAddress] = address(nftToken);
         // Mint 1 million tokens to msg.sender
@@ -59,10 +53,17 @@ contract BluebirdFactory is IBluebirdGrinder, Ownable {
         emit Fractionalised(_collectionAddress, _tokenId, address(nftToken));
     }
 
-    function redeem(address _collectionAddress, uint256 _tokenId) external {
+    function reconstructNFT(
+        address _collectionAddress,
+        uint256 _tokenId
+    ) external override {
+
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require tokenId exists in enumerable set
-        require(collectionToTokenIds[_collectionAddress].contains(_tokenId), "Token id does not exist");
+        require(
+            collectionToTokenIds[_collectionAddress].contains(_tokenId),
+            "Token id does not exist"
+        );
         // Require transfer of 1 million equivalent tokens to this contract
         require(
             IERC20(nftAddressToTokenAddress[_collectionAddress]).transferFrom(
@@ -73,11 +74,17 @@ contract BluebirdFactory is IBluebirdGrinder, Ownable {
             "Transfer failed"
         );
         // Burn all the tokens
-        IERC20(nftAddressToTokenAddress[_collectionAddress]).burn(FRACTIONALISED_AMOUNT);
+        IERC20(nftAddressToTokenAddress[_collectionAddress]).burn(
+            FRACTIONALISED_AMOUNT
+        );
         // Remove token id from enumerable set
         collectionToTokenIds[_collectionAddress].remove(_tokenId);
         // Transfer NFT to msg.sender
-        IERC721(_collectionAddress).transferFrom(address(this), msg.sender, _tokenId);
+        IERC721(_collectionAddress).transferFrom(
+            address(this),
+            msg.sender,
+            _tokenId
+        );
         // Emit event
         emit Redeemed(
             _collectionAddress,
@@ -88,12 +95,22 @@ contract BluebirdFactory is IBluebirdGrinder, Ownable {
         );
     }
 
-    // View function for enumerable
-    function getTokenIds(address _collectionAddress) external view returns (uint256[] memory) {
-        uint256[] memory tokenIds = new uint256[](collectionToTokenIds[_collectionAddress].length());
-        for (uint256 i = 0; i < collectionToTokenIds[_collectionAddress].length(); i++) {
-            tokenIds[i] = collectionToTokenIds[_collectionAddress].at(i);
-        }
-        return tokenIds;
+    function whitelistNFT(address _collectionAddress) external override {}
+
+    function getTokenFromCollection(address _collectionAddress) external view override returns (IBB20) {
+        return nftAddressToTokenAddress[_collectionAddress];
+    }
+
+
+    /**
+     * @notice Returns a concatenated string of a and b
+     * @param _a string a
+     * @param _b string b
+     */
+    function concatenate(
+        string memory _a,
+        string memory _b
+    ) internal pure returns (string memory) {
+        return string(abi.encodePacked(_a, _b));
     }
 }

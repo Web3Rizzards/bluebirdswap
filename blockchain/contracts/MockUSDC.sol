@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract MockUSDC is ERC20 {
     event Minted(address to, uint256 amount);
 
-    constructor() ERC20("Mock USDC", "USDC") {
-    }
+    constructor() ERC20("Mock USDC", "USDC") {}
+
     /**
      * @notice  Burn `amount` tokens and decreasing the total supply.
      * @param amount Amount of tokens to burn

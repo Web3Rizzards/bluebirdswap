@@ -6,9 +6,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract NFTToken is ERC20 {
     event Minted(address to, uint256 amount);
     address public factory;
+
     constructor(string memory _name, string memory _symbol, address _factory) ERC20(_name, _symbol) {
         factory = _factory;
     }
+
     /**
      * @notice  Burn `amount` tokens and decreasing the total supply.
      * @param amount Amount of tokens to burn

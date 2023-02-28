@@ -17,24 +17,29 @@ contract BluebirdFactory is Ownable {
     // Mapping of collection address to enumerable token Ids
     mapping(address => EnumerableSet.UintSet) internal collectionToTokenIds;
     mapping(address => address) public nftAddressToTokenAddress;
-    uint256 public constant FRACTIONALISED_AMOUNT = 1000000;
+    uint256 public constant FRACTIONALISED_AMOUNT = 1000000; //TODO: change to 1,000,000 ethers
     address public controller;
 
     // Events
-    event CallCreated(
+    event CallOptionsCreated(
         address indexed _callAddress,
         address indexed _nftFeed,
         address indexed _nftToken,
+        uint256 epoch,
         uint256[] _strikePrices,
         uint256 _premium,
+        uint256 _start,
         uint256 _expiry
     );
-    event PutCreated(
+
+    event PutOptionsCreated(
         address indexed _putAddress,
         address indexed _nftFeed,
         address indexed _nftToken,
+        uint256 epoch,
         uint256[] _strikePrices,
         uint256 _premium,
+        uint256 _start,
         uint256 _expiry
     );
     event NFTTokenCreated(
@@ -57,6 +62,11 @@ contract BluebirdFactory is Ownable {
         controller = _controller;
     }
 
+    /**
+     * @notice Create a New Call Option
+     * @param _nftFeed 
+     * @param _collectionAddress 
+     */
     function createNewOpt(address _nftFeed, address _collectionAddress) public onlyOwner {
         require(nftAddressToTokenAddress[_collectionAddress] != address(0), "NFT Token not created");
         // Get current floor price of NFT from Chainlink

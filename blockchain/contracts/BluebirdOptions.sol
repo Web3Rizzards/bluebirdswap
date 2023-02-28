@@ -130,40 +130,6 @@ contract BluebirdOptions is Ownable, ReentrancyGuard {
         return optionPricing.getOptionPrice(false, nftOpts[_id].expiry, nftOpts[_id].strike, _nftPrice, 0);
     }
 
-    function computeStandardDeviation(uint256[] memory prices) internal pure returns (uint256) {
-        uint256 n = prices.length;
-        uint256 mean = 0;
-
-        // Compute mean
-        for (uint256 i = 0; i < n; i++) {
-            mean += prices[i];
-        }
-        mean = mean / n;
-
-        // Compute sum of squared differences
-        uint256 sumSquaredDifferences = 0;
-        for (uint256 i = 0; i < n; i++) {
-            uint256 difference = prices[i] - mean;
-            sumSquaredDifferences += difference * difference;
-        }
-
-        // Compute variance and standard deviation
-        uint256 variance = sumSquaredDifferences / n;
-        uint256 standardDeviation = sqrt(variance);
-
-        return standardDeviation;
-    }
-
-    function sqrt(uint256 x) internal pure returns (uint256) {
-        uint256 z = (x + 1) / 2;
-        uint256 y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
-        }
-        return y;
-    }
-
     //Purchase a call option, needs desired token, ID of option and payment
     function buyOption(uint256 _id, uint256 _amount, bool _isPut, uint256 _viewPremium) public {
         require(

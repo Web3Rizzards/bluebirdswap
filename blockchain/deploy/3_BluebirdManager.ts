@@ -12,11 +12,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   let grinder = await deployments.get('BluebirdGrinder');
 
   // Chain Dependent Settings
-  let contract = await deploy('BluebirdFactory', {
+  let contract = await deploy('BluebirdManager', {
     from: deployer,
     args: [optionsPricing.address, deployer, grinder.address],
     logs: true,
   });
 };
 
-module.exports.tags = ['BluebirdFactory'];
+module.exports.tags = ['BluebirdManager'];

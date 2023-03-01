@@ -9,9 +9,6 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./interfaces/IBluebirdGrinder.sol";
 import {BB20} from "./BB20.sol";
 
-// TODO: Make contract compile
-
-
 contract BluebirdGrinder is IBluebirdGrinder, Ownable {
     // 1 NFT = 1 million BB20 tokens
     uint256 public constant FRACTIONALISED_AMOUNT = 1000000 ether;
@@ -19,6 +16,7 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
     // Mapping of collection address to enumerable token Ids
     mapping(address => EnumerableSet.UintSet) internal collectionToTokenIds;
     mapping(address => BB20) public nftAddressToTokenAddress;
+    mapping(address => bool) public whitelisted;
 
     constructor() {}
 
@@ -28,6 +26,7 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         uint256 _tokenId
     ) external override {
         require(_collectionAddress != address(0), "Invalid collection address");
+        require(whitelisted[_collectionAddress], "Collection not whitelisted");
         // Require transfer of NFT to this contract
         IERC721Metadata(_collectionAddress).transferFrom(msg.sender, address(this), _tokenId);
         
@@ -93,7 +92,9 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         );
     }
 
-    function whitelistNFT(address _collectionAddress) external override {}
+    function whitelistNFT(address _collectionAddress) external override onlyOwner{
+        whitelisted[_collectionAddress] = true;
+    }
 
     function getTokenFromCollection(address _collectionAddress) external view override returns (IBB20) {
         return nftAddressToTokenAddress[_collectionAddress];

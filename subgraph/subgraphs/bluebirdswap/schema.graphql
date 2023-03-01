@@ -1,0 +1,21 @@
+enum TokenStandard {
+  ERC721
+}
+
+type Collection @entity {
+  id: ID!
+
+  contract: String!
+  name: String!
+  tokens: [Token!]! @derivedFrom(field: "collection")
+}
+
+type Token @entity {
+  id: ID!
+
+  collection: Collection!
+
+  name: String
+  owner: String
+  tokenId: BigInt!
+}

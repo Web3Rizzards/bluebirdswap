@@ -1,0 +1,10 @@
+{
+  "name": "@bluebird/subgraph-abis",
+  "version": "1.0.0",
+  "description": "Subgraph ABIs",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "src"
+  ]
+}

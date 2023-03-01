@@ -1,0 +1,72 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - name: BluebirdFactory
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      address: "{{ bluebird_factory_address }}"
+      abi: BluebirdFactory
+      startBlock: {{ bluebird_factory_start_block }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AuctionExtended
+        - BidIncreased
+        - NewBid
+      abis:
+        - name: BluebirdFactory
+          file: {{{ abis }}}/BluebirdFactory.json
+      eventHandlers:
+        - event: CallOptionCreated(indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleCallOptionCreated
+        - event: PutOptionCreated(indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handlePutOptionCreated
+      file: ./src/mappings/bluebird-factory.ts
+  - name: BluebirdGrinder
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      address: "{{ bluebird_grinder_address }}"
+      abi: BluebirdGrinder
+      startBlock: {{ bluebird_grinder_start_block }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ExpeditionEnded
+        - ExpeditionStarted
+        - RewardsClaimed
+      abis:
+        - name: bluebird
+          file: {{{ abis }}}/BluebirdGrinder.json
+      eventHandlers:
+        - event: Redeemed(indexed address,uint256,address)
+          handler: handleAuctionExtended
+        - event: Fractionalized(indexed address,indexed address,uint256,address)
+          handler: handleAuctionExtended
+      file: ./src/mappings/bluebird-grinder.ts
+  - name: BBYC
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      address: "{{ bbyc_address }}"
+      abi: ERC721
+      startBlock: {{ bbyc_start_block }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: ERC721
+          file: {{{ abis }}}/721.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mappings/bbyc.ts

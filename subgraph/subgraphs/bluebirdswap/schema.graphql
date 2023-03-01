@@ -32,7 +32,7 @@ type Trades @entity {
 }
 
 type Option @entity(immutable: true) {
-  id: ID!
+  id: ID! # {CollectionId}-{OptionId}
   collection: Collection!
   epoch: BigInt!
   strikePrice: BigInt!

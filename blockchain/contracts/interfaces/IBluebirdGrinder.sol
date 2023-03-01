@@ -3,17 +3,18 @@ pragma solidity ^0.8.11;
 
 import { IBB20 } from "./IBB20.sol";
 
-/// @title IBluebird Grinder 
+/// @title IBluebird Grinder
 /// @notice The Bluebird Grinder will break down an NFT into shards
 interface IBluebirdGrinder {
+    event Redeemed(address indexed _collectionAddress, uint256 _tokenId, address _to);
 
-    event Redeemed(
+    event Fractionalised(
         address indexed _collectionAddress,
+        address indexed _nftTokenAddress,
         uint256 _tokenId,
-        address  _to
+        address _to
     );
-    
-    event Fractionalised(address indexed _collectionAddress,address indexed _nftTokenAddress, uint256 _tokenId, address  _to);
+
     /**
      * @notice Convert 1 ERC721 Token into X amount of BB20 Tokens
      * @param _collectionAddress Collection Address
@@ -28,7 +29,6 @@ interface IBluebirdGrinder {
      */
     function reconstructNFT(address _collectionAddress, uint256 _tokenId) external;
 
-
     /**
      * @notice Whitelist NFT Collection
      * @param _collectionAddress Address of the NFT collection to be whitelisted
@@ -40,5 +40,4 @@ interface IBluebirdGrinder {
      * @param _collectionAddress Address of the NFT collection
      */
     function getTokenFromCollection(address _collectionAddress) external view returns (IBB20);
-    
 }

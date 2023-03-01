@@ -7,18 +7,16 @@ import "./interfaces/IBB20.sol";
 /// @title BB20 - Fractionalized NFT Token
 /// @dev Only can be issued by the BluebirdGrinder
 contract BB20 is IBB20, ERC20 {
-    
     address public grinder;
 
-    modifier onlyGrinder {
+    modifier onlyGrinder() {
         _isFactory();
         _;
     }
-    
+
     constructor(string memory _name, string memory _symbol, address _grinder) ERC20(_name, _symbol) {
         grinder = _grinder;
     }
-
 
     /**
      * @dev Mint BB20 Tokens
@@ -31,12 +29,12 @@ contract BB20 is IBB20, ERC20 {
      * @notice  Burn `amount` tokens and decreasing the total supply.
      * @param amount Amount of tokens to burn
      */
-    function burn(uint256 amount) external override onlyGrinder returns (bool)  {
+    function burn(uint256 amount) external override onlyGrinder returns (bool) {
         _burn(_msgSender(), amount);
         return true;
     }
 
     function _isFactory() internal view {
-        require (msg.sender == grinder, "BB20: Only grinder allowed");
+        require(msg.sender == grinder, "BB20: Only grinder allowed");
     }
 }

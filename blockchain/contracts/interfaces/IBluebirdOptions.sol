@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-/// @title IBluebirdOptions 
+/// @title IBluebirdOptions
 /// @notice The Bluebird Options contract will represent a options belonging to an epoch.
 /// @notice The contract will contain the strike prices for the epoch
 /// @notice The contract will only encapsulate puts or calls only
 /// @notice The contract shall be named as {NFT_SYMBOL}-{EPOCH}-{PUT/CALL}
 interface IBluebirdOptions {
-
     /**
      * @notice Buy an option
      * @param _id ID of the option
@@ -18,7 +17,7 @@ interface IBluebirdOptions {
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
      */
-    function buy(uint256 _id, uint256 _amount, bool _isPut, uint256 _getPremium ) external;
+    function buy(uint256 _id, uint256 _amount, bool _isPut, uint256 _getPremium) external;
 
     /**
      * @notice Claim profits, if any
@@ -28,7 +27,7 @@ interface IBluebirdOptions {
     function exercise(uint256 _id) external;
 
     /**
-     * @notice Get strike prices of the current contract    
+     * @notice Get strike prices of the current contract
      * @param _epoch Epoch of the option
      * @param _isPut Is the option a put option
      */
@@ -38,4 +37,6 @@ interface IBluebirdOptions {
      * @notice Get premium based on option id
      */
     function getPremium(uint256 _id) external view returns (uint256);
+
+    function writeOption() external;
 }

@@ -37,7 +37,7 @@ library BlackScholes {
         uint256 timeToExpiry,
         uint256 riskFreeRate,
         uint256 volatility
-    ) internal pure returns (uint256) {
+    ) internal view returns (uint256) {
         bytes16 S = ABDKMathQuad.fromUInt(price);
         bytes16 X = ABDKMathQuad.fromUInt(strike);
         bytes16 T = ABDKMathQuad.div(

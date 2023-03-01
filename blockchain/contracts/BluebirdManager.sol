@@ -86,9 +86,13 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         uint256 _amount,
         uint256 _strikePrice,
         uint256 _premium,
-        bool _isPut
+        bool _isPut,
+        uint256 _timestamp,
+        uint256 _epoch,
+        address _nftToken
     ) external onlyOptions {
-        emit Bought(_user, _order, _amount, _strikePrice, _premium, _isPut);
+            emit Bought(_user, _order,_amount, _strikePrice, _premium, _isPut, _timestamp, _epoch,_nftToken);
+
     }
 
     function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external onlyOptions {

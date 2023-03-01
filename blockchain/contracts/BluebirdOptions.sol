@@ -200,7 +200,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
         nftOpts[_id].buyers.push(msg.sender);
 
-        bluebirdManager.emitBoughtEvent(msg.sender, _id, _amount, nftOpts[_id].strike, _premium, _isPut);
+        bluebirdManager.emitBoughtEvent(msg.sender, _id, _amount, nftOpts[_id].strike, _premium, _isPut, block.timestamp, epoch, address(nftToken));
     }
 
     /**

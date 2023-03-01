@@ -1,24 +1,23 @@
-import {
-  AuctionExtended,
-  BidIncreased,
-  NewBid,
-  OwnershipTransferred,
-  bluebirdAuction,
-} from "../../generated/bluebirdAuction/bluebirdAuction";
+import {} from "../../generated/BluebirdManager/BluebirdManager";
 
 import { AuctionBid } from "../../../bluebird-old/generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 
-export function handleAuctionExtended(event: AuctionExtended): void {}
+// - event: Bought(indexed address,indexed uint256,uint256,uint256,uint256,bool)
+// handler: handleBought
+// - event: CallOptionCreated(indexed address,indexed address,indexed address,uint256,uint256[],uint256,uint256)
+// handler: handleCallOptionCreated
+// - event: Claimed(indexed address,indexed uint256,uint256)
+// handler: handleClaimed
+// - event: OwnershipTransferred(indexed address,indexed address)
+// handler: handleOwnershipTransferred
+// - event: PutOptionCreated(indexed address,indexed address,indexed address,uint256,uint256[],uint256,uint256)
+// handler: handlePutOptionCreated
 
-export function handleBidIncreased(event: BidIncreased): void {}
+export function handleBought(event: AuctionExtended): void {}
 
-export function handleNewBid(event: NewBid): void {
-  let entity = new AuctionBid(event.transaction.hash);
-  entity.user = event.params.bidder;
-  entity.amount = event.params.value;
-  entity.timestamp = event.block.timestamp;
-  entity.save();
-}
+export function handleCallOptionCreated(event: BidIncreased): void {}
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+export function handleClaimed(event: NewBid): void {}
+
+export function handlePutOptionCreated(event: OwnershipTransferred): void {}

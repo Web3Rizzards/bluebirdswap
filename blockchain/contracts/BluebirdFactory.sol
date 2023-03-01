@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -11,14 +10,11 @@ import "./BluebirdOptions.sol";
 import "./BB20.sol";
 import "./interfaces/IBluebirdGrinder.sol";
 
-// TODO: Make contract compile
-
 contract BluebirdFactory is IBluebirdFactory, Ownable {
     BluebirdOptions[] public optArray;
     IOptionPricing public optionPricing;
     IBluebirdGrinder public grinder;
 
-    uint256 public constant FRACTIONALISED_AMOUNT = 1000000; //TODO: change to 1,000,000 ethers
     address public controller;
 
     constructor(
@@ -53,25 +49,18 @@ contract BluebirdFactory is IBluebirdFactory, Ownable {
             uint80 answeredInRound
         ) = _nftFeed.latestRoundData();
 
-        // TODO: Get Strike Prices for Call option based on current floor price
-        // uint256[3] memory =  _getCallStrikePrices();
 
-        // Create new Call Options
-        BluebirdOptions call = new BluebirdOptions(
+        // Create new Options
+        BluebirdOptions opt = new BluebirdOptions(
             _nftFeed,
             _nftToken,
             controller,
             optionPricing
         );
 
-        // TODO: Get Strike Prices for Put option based on current floor price
-        // uint256[3] memory =  _getPutStrikePrices();
+        // Add to array
+        optArray.push(opt);
 
-        // Create new Put Options
-
-        // TODO: Emit event
     }
 
-    // TODO:
-    function getEpoch(address _collectionAddress) external view override {}
 }

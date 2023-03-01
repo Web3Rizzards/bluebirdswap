@@ -8,6 +8,44 @@ pragma solidity ^0.8.11;
 /// @notice The contract shall be named as {NFT_SYMBOL}-{EPOCH}-{PUT/CALL}
 interface IBluebirdOptions {
 
+     /**
+     * @notice Emit when Call Option Contract is Created
+     * @param _contractAddress Address of the contract created
+     * @param _nftFeed Address of the NFT Oracle Feed from Chainlink
+     * @param epoch Epoch of the option
+     * @param _strikePrices Fixed strike prices
+     * @param _start Start time of epoch
+     * @param _expiry End time of epoch
+     */
+    event CallOptionCreated(
+        address indexed _contractAddress,
+        address indexed _nftFeed,
+        address indexed _nftToken,
+        uint256 epoch,
+        uint256[] _strikePrices,
+        uint256 _start,
+        uint256 _expiry
+    );
+
+    /**
+     * @notice Emit when ut option contract is Created
+     * @param _contractAddress Address of the contract created
+     * @param _nftFeed Address of the NFT Oracle Feed from Chainlink
+     * @param epoch Epoch of the option
+     * @param _strikePrices Fixed strike prices
+     * @param _start Start time of epoch
+     * @param _expiry End time of epoch
+     */
+    event PutOptionCreated(
+        address indexed _contractAddress,
+        address indexed _nftFeed,
+        address indexed _nftToken,
+        uint256 epoch,
+        uint256[] _strikePrices,
+        uint256 _start,
+        uint256 _expiry
+    );
+
     /**
      * @notice Emitted when an option is bought
      * @param _user User's address
@@ -15,8 +53,9 @@ interface IBluebirdOptions {
      * @param _amount Lots purchased
      * @param _strikePrice Strike price of purchase
      * @param _premium Premium paid
+     * @param _isPut Is the option a put option
      */
-    event Bought(address indexed _user, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium);
+    event Bought(address indexed _user, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium, bool _isPut);
 
 
     /**
@@ -29,28 +68,31 @@ interface IBluebirdOptions {
 
     /**
      * @notice Buy an option
-     * @param _strikeIndex Index of the strike price
+     * @param _id ID of the option
      * @param _amount amount of lots to buy
+     * @param _isPut Is the option a put option
+     * @param _getPremium premium viewed before buying
      * @dev Option must have started
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
      */
-    function buy(uint8 _strikeIndex, uint256 _amount) external;
+    function buy(uint256 _id, uint256 _amount, bool _isPut, uint256 _getPremium ) external;
 
     /**
      * @notice Claim profits, if any
-     * @param _orderIndex Order Index
+     * @param _id Order Index
      * @dev Must be owner of order
      */
-    function exercise(uint256 _orderIndex) external;
+    function exercise(uint256 _id) external;
 
     /**
      * @notice Get strike prices of the current contract    
+     * @param _epoch Epoch of the option
      */
-    function getStrikes() external view returns (uint256[] memory);
+    function getStrikes(uint256 _epoch) external view returns (uint256[] memory);
 
     /**
-     * @notice Get premium based on strike price (derived from _strikeIndex)   
+     * @notice Get premium based on option id
      */
-    function getPremium(uint256 _strikeIndex) external view returns (uint256);
+    function viewPremium(uint256 _id) external view returns (uint256);
 }

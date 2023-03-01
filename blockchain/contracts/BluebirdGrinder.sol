@@ -61,7 +61,7 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require tokenId exists in enumerable set
         require(
-            collectionToTokenIds[_collectionAddress].contains(_tokenId),
+            EnumerableSet.contains(collectionToTokenIds[_collectionAddress],_tokenId),
             "Token id does not exist"
         );
         // Require transfer of 1 million equivalent tokens to this contract
@@ -74,11 +74,11 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
             "Transfer failed"
         );
         // Burn all the tokens
-        IERC20(nftAddressToTokenAddress[_collectionAddress]).burn(
+        nftAddressToTokenAddress[_collectionAddress].burn(
             FRACTIONALISED_AMOUNT
         );
         // Remove token id from enumerable set
-        collectionToTokenIds[_collectionAddress].remove(_tokenId);
+        EnumerableSet.contains(collectionToTokenIds[_collectionAddress],_tokenId);
         // Transfer NFT to msg.sender
         IERC721(_collectionAddress).transferFrom(
             address(this),
@@ -89,9 +89,7 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         emit Redeemed(
             _collectionAddress,
             _tokenId,
-            nftAddressToTokenAddress[_collectionAddress],
-            msg.sender,
-            FRACTIONALISED_AMOUNT
+            msg.sender
         );
     }
 

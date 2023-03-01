@@ -52,8 +52,11 @@ interface IBluebirdManager {
      * @param _strikePrice Strike price of purchase
      * @param _premium Premium paid
      * @param _isPut Is the option a put option
+     * @param _timestamp Timestamp of purchase
+     * @param _epoch Epoch of the option
+     * @param _nftToken Address of the NFT Token
      */
-    event Bought(address indexed _user, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium, bool _isPut);
+    event Bought(address indexed _user, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium, bool _isPut, uint256 _timestamp, uint256 _epoch, address _nftToken);
 
 
     /**

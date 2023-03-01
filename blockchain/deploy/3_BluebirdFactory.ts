@@ -1,4 +1,5 @@
 import 'dotenv/config';
+
 import { ethers } from 'hardhat';
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
@@ -6,14 +7,16 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  // Get deployed contracts
-  const bluebirdToken = await deployments.get('Bluebird');
-  const usdc = await deployments.get('MockUSDC');
+  // Get Options Pricing
+  let optionsPricing = await deployments.get('OptionPricing');
+  let grinder = await deployments.get('BluebirdGrinder');
+
   // Chain Dependent Settings
-  let contract = await deploy('BluebirdFaucet', {
+  let contract = await deploy('BluebirdFactory', {
     from: deployer,
-    args: [bluebirdToken.address, usdc.address],
+    args: [optionsPricing.address, deployer, grinder.address],
+    logs: true,
   });
 };
 
-module.exports.tags = ['BluebirdFaucet'];
+module.exports.tags = ['BluebirdFactory'];

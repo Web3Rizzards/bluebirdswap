@@ -3,16 +3,16 @@ pragma solidity ^0.8.0;
 
 // Libraries
 import {SafeMath} from '@openzeppelin/contracts/utils/math/SafeMath.sol';
-import {BlackScholes} from './BlackScholes.sol';
-import {ABDKMathQuad} from './ABDKMathQuad.sol';
+import {BlackScholes} from './libraries/BlackScholes.sol';
+import {ABDKMathQuad} from './libraries/ABDKMathQuad.sol';
 
 // Contracts
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 
 // Interfaces
-import {IOptionPricing} from '../interfaces/IOptionPricing.sol';
+import {IOptionPricing} from './interfaces/IOptionPricing.sol';
 
-contract OptionPricingSimple is Ownable, IOptionPricing {
+contract OptionPricing is Ownable, IOptionPricing {
     using SafeMath for uint256;
 
     // The max volatility possible

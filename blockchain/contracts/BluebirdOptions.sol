@@ -32,9 +32,9 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     struct Option {
         uint strike; // Price in USD (18 decimal places) option allows buyer to purchase tokens at
         uint expiry; // Unix timestamp of expiration time
-        uint id; // Unique ID of option, also array index
+        uint id; // Unique ID of option, also array index //TODO: REMOVE
         bool isPut; // True if option is a put, false if call
-        address[] buyers; // Array of addresses that have bought this option
+        address[] buyers; // Array of addresses that have bought this option //TODO: REMOVE
     }
 
     uint256 public currentId;
@@ -147,7 +147,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch,
             _strikePricesCall,
             _start,
-            EXPIRY
+            EXPIRY // TODO: should be _start + EXPIRY
         );
         bluebirdManager.emitPutOptionCreatedEvent(
             address(this),
@@ -156,7 +156,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch,
             _strikePricesPut,
             _start,
-            EXPIRY
+            EXPIRY // TODO: should be _start + EXPIRY
         );
     }
 

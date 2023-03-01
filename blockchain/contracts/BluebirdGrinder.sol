@@ -2,9 +2,9 @@
 pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./interfaces/IBluebirdGrinder.sol";
 import {BB20} from "./BB20.sol";
@@ -29,28 +29,28 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
     ) external override {
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require transfer of NFT to this contract
-        IERC721(_collectionAddress).transferFrom(msg.sender, address(this),_tokenId);
+        IERC721Metadata(_collectionAddress).transferFrom(msg.sender, address(this), _tokenId);
         
         // Add token id to enumerable set
-        // collectionToTokenIds[_collectionAddress].add(_tokenId);
+        EnumerableSet.add(collectionToTokenIds[_collectionAddress], _tokenId);
 
         string memory _name = concatenate(
             "BB Fractionalized ",
-            IERC721(_collectionAddress).name()
+            IERC721Metadata(_collectionAddress).name()
         );
         string memory _symbol = concatenate(
             "bb",
-            IERC721(_collectionAddress).symbol()
+            IERC721Metadata(_collectionAddress).symbol()
         );
         // Create new BB20 contract
         BB20 nftToken = new BB20(_name, _symbol, address(this));
 
         // Map collection address to BB20 address
-        nftAddressToTokenAddress[_collectionAddress] = address(nftToken);
+        nftAddressToTokenAddress[_collectionAddress] = nftToken;
         // Mint 1 million tokens to msg.sender
         nftToken.mint(msg.sender, FRACTIONALISED_AMOUNT);
         // Emit event
-        emit Fractionalised(_collectionAddress, _tokenId, address(nftToken));
+        emit Fractionalised(_collectionAddress, address(nftToken), _tokenId, msg.sender);
     }
 
     function reconstructNFT(
@@ -61,7 +61,7 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require tokenId exists in enumerable set
         require(
-            collectionToTokenIds[_collectionAddress].contains(_tokenId),
+            EnumerableSet.contains(collectionToTokenIds[_collectionAddress],_tokenId),
             "Token id does not exist"
         );
         // Require transfer of 1 million equivalent tokens to this contract
@@ -74,11 +74,11 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
             "Transfer failed"
         );
         // Burn all the tokens
-        IERC20(nftAddressToTokenAddress[_collectionAddress]).burn(
+        nftAddressToTokenAddress[_collectionAddress].burn(
             FRACTIONALISED_AMOUNT
         );
         // Remove token id from enumerable set
-        collectionToTokenIds[_collectionAddress].remove(_tokenId);
+        EnumerableSet.contains(collectionToTokenIds[_collectionAddress],_tokenId);
         // Transfer NFT to msg.sender
         IERC721(_collectionAddress).transferFrom(
             address(this),
@@ -89,9 +89,7 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         emit Redeemed(
             _collectionAddress,
             _tokenId,
-            nftAddressToTokenAddress[_collectionAddress],
-            msg.sender,
-            FRACTIONALISED_AMOUNT
+            msg.sender
         );
     }
 

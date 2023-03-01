@@ -58,6 +58,24 @@
                 "internalType": "bool",
                 "name": "_isPut",
                 "type": "bool"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_timestamp",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_epoch",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_nftToken",
+                "type": "address"
             }
         ],
         "name": "Bought",
@@ -224,6 +242,11 @@
                 "internalType": "address",
                 "name": "_collectionAddress",
                 "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_nftFeedAddress",
+                "type": "address"
             }
         ],
         "name": "createOptions",
@@ -262,6 +285,21 @@
                 "internalType": "bool",
                 "name": "_isPut",
                 "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_timestamp",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_epoch",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_nftToken",
+                "type": "address"
             }
         ],
         "name": "emitBoughtEvent",
@@ -376,6 +414,19 @@
         "name": "emitPutOptionCreatedEvent",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getOptArray",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

@@ -52,10 +52,10 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
         // Get current floor price of NFT from Chainlink
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);
-        
+
         // Create new Options
         BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing);
-        
+
         // Add to array
         optArray.add(address(opt));
 

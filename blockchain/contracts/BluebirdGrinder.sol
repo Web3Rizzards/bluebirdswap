@@ -30,14 +30,17 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
 
         // Add token id to enumerable set
         EnumerableSet.add(collectionToTokenIds[_collectionAddress], _tokenId);
+        BB20 nftToken;
+        if (nftAddressToTokenAddress[_collectionAddress] == BB20(address(0))) {
+            string memory _name = concatenate("BB Fractionalized ", IERC721Metadata(_collectionAddress).name());
+            string memory _symbol = concatenate("bb", IERC721Metadata(_collectionAddress).symbol());
+            // Create new BB20 contract
+            nftToken = new BB20(_name, _symbol, address(this));
+            nftAddressToTokenAddress[_collectionAddress] = nftToken;
+        } else {
+            nftToken = nftAddressToTokenAddress[_collectionAddress];
+        }
 
-        string memory _name = concatenate("BB Fractionalized ", IERC721Metadata(_collectionAddress).name());
-        string memory _symbol = concatenate("bb", IERC721Metadata(_collectionAddress).symbol());
-        // Create new BB20 contract
-        BB20 nftToken = new BB20(_name, _symbol, address(this));
-
-        // Map collection address to BB20 address
-        nftAddressToTokenAddress[_collectionAddress] = nftToken;
         // Mint 1 million tokens to msg.sender
         nftToken.mint(msg.sender, FRACTIONALISED_AMOUNT);
         // Emit event

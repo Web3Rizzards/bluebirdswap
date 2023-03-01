@@ -12,6 +12,7 @@ import { IBluebirdOptions } from "./interfaces/IBluebirdOptions.sol";
 import { IBB20 } from "./interfaces/IBB20.sol";
 import { BluebirdMath } from "./libraries/BluebirdMath.sol";
 import { IBluebirdManager } from "./interfaces/IBluebirdManager.sol";
+import "hardhat/console.sol";
 
 contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     // Price feed interface
@@ -166,7 +167,15 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      */
     function getPremium(uint256 _id) public view returns (uint256) {
         uint256 _nftPrice = getNftPrice();
-        return optionPricing.getOptionPrice(false, nftOpts[_id].expiry, nftOpts[_id].strike, _nftPrice, 0);
+        uint256 baseIv = BluebirdMath.computeStandardDeviation(prices);
+        return
+            optionPricing.getOptionPrice(
+                nftOpts[_id].isPut,
+                nftOpts[_id].expiry,
+                nftOpts[_id].strike,
+                _nftPrice / 1000000,
+                baseIv
+            );
     }
 
     //Purchase a call option, needs desired token, ID of option and payment
@@ -177,7 +186,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         );
         // Add max buy
 
-        require(nftOpts[_id].expiry < block.timestamp, "Option is expired and cannot be bought");
+        require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
 
         uint256 nftTokenPrice = getNftPrice() / 1000000;
 
@@ -189,6 +198,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         } else {
             _premium = optionPricing.getOptionPrice(false, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
         }
+        userToOptionIdToAmount[msg.sender][_id] += _amount;
         // If premium is not within 1% of view premium, revert
         require(_premium >= _getPremium - (_getPremium / 100), "Premium is not within 1% of view premium");
 
@@ -250,7 +260,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     function exercise(uint256 _id) external override {
         require(userToOptionIdToAmount[msg.sender][_id] > 0, "You do not own this option");
         require(!exercised[msg.sender][_id], "Option has already been exercised");
-        require(nftOpts[_id].expiry > block.timestamp, "Option is not expired");
+        require(nftOpts[_id].expiry < block.timestamp, "Option is not expired");
         uint256 nftTokenPrice = getNftPrice() / 1000000;
 
         // Calculate pnl

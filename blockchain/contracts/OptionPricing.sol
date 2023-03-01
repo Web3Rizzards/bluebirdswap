@@ -11,6 +11,7 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 // Interfaces
 import { IOptionPricing } from "./interfaces/IOptionPricing.sol";
+import "hardhat/console.sol";
 
 contract OptionPricing is Ownable, IOptionPricing {
     using SafeMath for uint256;
@@ -64,7 +65,6 @@ contract OptionPricing is Ownable, IOptionPricing {
         uint256 volatility
     ) external view override returns (uint256) {
         uint256 timeToExpiry = expiry.sub(block.timestamp).div(864);
-
         uint256 optionPrice = BlackScholes
             .calculate(
                 isPut ? 1 : 0, // 0 - Put, 1 - Call
@@ -75,7 +75,6 @@ contract OptionPricing is Ownable, IOptionPricing {
                 volatility
             )
             .div(BlackScholes.DIVISOR);
-
         uint256 minOptionPrice = lastPrice.mul(minOptionPricePercentage).div(1e10);
 
         if (minOptionPrice > optionPrice) {

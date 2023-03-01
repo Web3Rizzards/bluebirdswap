@@ -75,14 +75,19 @@ describe('BluebirdManager', function () {
     for (let i = 0; i < 10; i++) {
       await bbyc.connect(user).mint();
     }
+    for (let i = 0; i < 10; i++) {
+      await bbyc.connect(user2).mint();
+    }
     // Whitelist bbyc
     await bluebirdGrinder.whitelistNFT(bbyc.address);
     // Approve bbyc to bluebirdGrinder
     await bbyc.connect(user).setApprovalForAll(bluebirdGrinder.address, true);
+    await bbyc.connect(user2).setApprovalForAll(bluebirdGrinder.address, true);
   });
   // Test for all constant values
   it('Should create options', async () => {
     await bluebirdGrinder.connect(user).fractionalizeNFT(bbyc.address, 1);
+    await bluebirdGrinder.connect(user2).fractionalizeNFT(bbyc.address, 11);
     await bluebirdManager.createOptions(bbyc.address, mockOracle.address);
     expect((await bluebirdManager.getOptArray()).length).to.equal(1);
     // Get contract address of new optionsContract
@@ -93,5 +98,16 @@ describe('BluebirdManager', function () {
     for (let i = 0; i < 6; i++) {
       console.log(await bluebirdOptions.nftOpts(i));
     }
+    const bb20Address = await bluebirdGrinder.nftAddressToTokenAddress(bbyc.address);
+    bb20 = (await ethers.getContractAt('BB20', bb20Address)) as BB20;
+    await bb20.connect(user2).approve(bluebirdOptions.address, ethers.constants.MaxUint256);
+    await bb20.connect(user).approve(bluebirdOptions.address, ethers.constants.MaxUint256);
+    await bluebirdOptions.connect(user2).depositNftToken(ethers.utils.parseEther('1000'));
+    let _getPremium = await bluebirdOptions.getPremium(0);
+    await bluebirdOptions.connect(user).buy(0, 2, false, _getPremium);
+    // One week passes
+    await ethers.provider.send('evm_increaseTime', [604800]);
+    // Try to exercise
+    await bluebirdOptions.connect(user).exercise(0);
   });
 });

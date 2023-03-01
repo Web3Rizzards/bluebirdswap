@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
+import "hardhat/console.sol";
 
 library BluebirdMath {
     /**
@@ -7,7 +8,7 @@ library BluebirdMath {
      * @param _values Array of values
      * @return Standard deviation of `_values`
      */
-    function computeStandardDeviation(uint256[7] memory _values) internal pure returns (uint256) {
+    function computeStandardDeviation(uint256[7] memory _values) internal view returns (uint256) {
         uint256 n = _values.length;
         uint256 mean = 0;
 
@@ -16,11 +17,16 @@ library BluebirdMath {
             mean += _values[i];
         }
         mean = mean / n;
-
         // Compute sum of squared differences
         uint256 sumSquaredDifferences = 0;
         for (uint256 i = 0; i < n; i++) {
-            uint256 difference = _values[i] - mean;
+            uint256 difference;
+            if (_values[i] > mean) {
+                difference = _values[i] - mean;
+            } else {
+                difference = mean - _values[i];
+            }
+
             sumSquaredDifferences += difference * difference;
         }
 

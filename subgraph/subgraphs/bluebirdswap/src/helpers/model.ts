@@ -1,6 +1,7 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-import { Collection, StatsData, Token, User } from "../../generated/schema";
-import { getAddressId, getName } from ".";
+import { Collection, Token } from "../../generated/schema";
+
+import { getAddressId } from ".";
 
 // import { getAddressId } from '.';
 
@@ -16,7 +17,7 @@ function createCollection(
   if (!collection) {
     collection = new Collection(id);
 
-    collection.contract = contract.toHexString();
+    collection.contract = contract;
     collection.name = name;
 
     collection.save();
@@ -57,15 +58,4 @@ export function getToken(contract: Address, tokenId: BigInt): Token {
   }
 
   return token;
-}
-
-export function getUser(address: Address): User {
-  let user = User.load(address.toHexString());
-
-  if (!user) {
-    user = new User(address.toHexString());
-    user.save();
-  }
-
-  return user;
 }

@@ -1,7 +1,11 @@
-import {} from "../../generated/BluebirdManager/BluebirdManager";
+import {
+  CallOptionCreated,
+  Claimed,
+  PutOptionCreated,
+} from "../../generated/BluebirdManager/BluebirdManager";
 
-import { AuctionBid } from "../../../bluebird-old/generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
+import { Bought } from "./../../generated/BluebirdManager/BluebirdManager";
 
 // - event: Bought(indexed address,indexed uint256,uint256,uint256,uint256,bool)
 // handler: handleBought
@@ -14,10 +18,10 @@ import { BigInt } from "@graphprotocol/graph-ts";
 // - event: PutOptionCreated(indexed address,indexed address,indexed address,uint256,uint256[],uint256,uint256)
 // handler: handlePutOptionCreated
 
-export function handleBought(event: AuctionExtended): void {}
+export function handleBought(event: Bought): void {}
 
-export function handleCallOptionCreated(event: BidIncreased): void {}
+export function handleCallOptionCreated(event: CallOptionCreated): void {}
 
-export function handleClaimed(event: NewBid): void {}
+export function handleClaimed(event: Claimed): void {}
 
-export function handlePutOptionCreated(event: OwnershipTransferred): void {}
+export function handlePutOptionCreated(event: PutOptionCreated): void {}

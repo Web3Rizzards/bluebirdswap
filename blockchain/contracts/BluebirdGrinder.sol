@@ -29,28 +29,28 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
     ) external override {
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require transfer of NFT to this contract
-        IERC721(_collectionAddress).transferFrom(msg.sender, address(this),_tokenId);
+        IERC721Metadata(_collectionAddress).transferFrom(msg.sender, address(this), _tokenId);
         
         // Add token id to enumerable set
-        // collectionToTokenIds[_collectionAddress].add(_tokenId);
+        EnumerableSet.add(collectionToTokenIds[_collectionAddress], _tokenId);
 
         string memory _name = concatenate(
             "BB Fractionalized ",
-            IERC721(_collectionAddress).name()
+            IERC721Metadata(_collectionAddress).name()
         );
         string memory _symbol = concatenate(
             "bb",
-            IERC721(_collectionAddress).symbol()
+            IERC721Metadata(_collectionAddress).symbol()
         );
         // Create new BB20 contract
         BB20 nftToken = new BB20(_name, _symbol, address(this));
 
         // Map collection address to BB20 address
-        nftAddressToTokenAddress[_collectionAddress] = address(nftToken);
+        nftAddressToTokenAddress[_collectionAddress] = nftToken;
         // Mint 1 million tokens to msg.sender
         nftToken.mint(msg.sender, FRACTIONALISED_AMOUNT);
         // Emit event
-        emit Fractionalised(_collectionAddress, _tokenId, address(nftToken));
+        emit Fractionalised(_collectionAddress, address(nftToken), _tokenId, msg.sender);
     }
 
     function reconstructNFT(

@@ -160,6 +160,15 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 empty
             );
 
+            //TODO:
+            // Create an event for each option created
+            // e.g. event CallOptionCreated(uint256 id, address nftToken, Option option);
+            // emit CallOptionCreated(
+            //     currentId,
+            //     nftOpts[currentId],
+            // );
+
+
             nftOpts[currentId + 1] = Option(
                 _strikePricesPut[i],
                 _start + EXPIRY,
@@ -167,6 +176,14 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 true,
                 empty
             );
+
+            //TODO:
+            // Create an event for each option created
+            // e.g. event PutOptionCreated(uint256 id, Option option);
+            // emit CallOptionCreated(
+            //     currentId,
+            //     nftOpts[currentId],
+            // );
 
             currentId += 2;
         }

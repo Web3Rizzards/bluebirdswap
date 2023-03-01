@@ -18,5 +18,4 @@ interface IBB20 is IERC20 {
      * @param amount Amount of tokens to burn
      */
     function burn(uint256 amount) external returns (bool);
-
 }

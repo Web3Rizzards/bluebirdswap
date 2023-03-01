@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-
 library BluebirdMath {
-    
     /**
      * Compute standard deviation of an array of values
      * @param _values Array of values

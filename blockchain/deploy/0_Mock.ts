@@ -18,6 +18,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
     log: true,
     args: [],
   });
+
+  await deploy('MockOracle', {
+    from: deployer,
+    log: true,
+    args: [ethers.utils.parseEther('100'), 18, 'Mock Oracle'],
+  });
 };
 
 module.exports.tags = ['Mock'];

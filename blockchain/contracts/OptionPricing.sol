@@ -2,15 +2,15 @@
 pragma solidity ^0.8.0;
 
 // Libraries
-import {SafeMath} from '@openzeppelin/contracts/utils/math/SafeMath.sol';
-import {BlackScholes} from './libraries/BlackScholes.sol';
-import {ABDKMathQuad} from './libraries/ABDKMathQuad.sol';
+import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import { BlackScholes } from "./libraries/BlackScholes.sol";
+import { ABDKMathQuad } from "./libraries/ABDKMathQuad.sol";
 
 // Contracts
-import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 // Interfaces
-import {IOptionPricing} from './interfaces/IOptionPricing.sol';
+import { IOptionPricing } from "./interfaces/IOptionPricing.sol";
 
 contract OptionPricing is Ownable, IOptionPricing {
     using SafeMath for uint256;
@@ -31,11 +31,7 @@ contract OptionPricing is Ownable, IOptionPricing {
     /// @notice updates volatility cap for an option pool
     /// @param _volatilityCap the new volatility cap
     /// @return whether volatility cap was updated
-    function updateVolatilityCap(uint256 _volatilityCap)
-        external
-        onlyOwner
-        returns (bool)
-    {
+    function updateVolatilityCap(uint256 _volatilityCap) external onlyOwner returns (bool) {
         volatilityCap = _volatilityCap;
 
         return true;
@@ -44,11 +40,7 @@ contract OptionPricing is Ownable, IOptionPricing {
     /// @notice updates % of the price of asset which is the minimum option price possible
     /// @param _minOptionPricePercentage the new %
     /// @return whether % was updated
-    function updateMinOptionPricePercentage(uint256 _minOptionPricePercentage)
-        external
-        onlyOwner
-        returns (bool)
-    {
+    function updateMinOptionPricePercentage(uint256 _minOptionPricePercentage) external onlyOwner returns (bool) {
         minOptionPricePercentage = _minOptionPricePercentage;
 
         return true;
@@ -84,9 +76,7 @@ contract OptionPricing is Ownable, IOptionPricing {
             )
             .div(BlackScholes.DIVISOR);
 
-        uint256 minOptionPrice = lastPrice.mul(minOptionPricePercentage).div(
-            1e10
-        );
+        uint256 minOptionPrice = lastPrice.mul(minOptionPricePercentage).div(1e10);
 
         if (minOptionPrice > optionPrice) {
             return minOptionPrice;

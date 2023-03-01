@@ -24,10 +24,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
 
   let bluebirdFactory: Deployment | null;
   let bluebirdGrinder: Deployment | null;
+  let bluebirdManager: Deployment | null;
   let BBYC: Deployment | null;
 
   bluebirdFactory = await deployments.getOrNull('BluebirdFactory');
   bluebirdGrinder = await deployments.getOrNull('BluebirdGrinder');
+  bluebirdManager = await deployments.getOrNull('BluebirdManager');
   BBYC = await deployments.getOrNull('BBYC');
 
   function getAddress(contract: Deployment | Contract | null) {
@@ -55,6 +57,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
       value: getAddress(bluebirdGrinder),
       blockNumber: getBlockNumber(bluebirdGrinder),
     },
+    {
+      name: 'BluebirdManager.address',
+      value: getAddress(bluebirdGrinder),
+      blockNumber: getBlockNumber(bluebirdGrinder),
+    },
     { name: 'BBYC.address', value: getAddress(BBYC), blockNumber: getBlockNumber(BBYC) },
   ];
 
@@ -66,6 +73,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
     bluebird_factory_start_block: getBlockNumber(bluebirdFactory),
     bluebird_grinder_address: getAddress(bluebirdGrinder),
     bluebird_grinder_start_block: getBlockNumber(bluebirdGrinder),
+    bluebird_manager_address: getAddress(bluebirdManager),
+    bluebird_manager_start_block: getBlockNumber(bluebirdManager),
     bbyc_address: getAddress(BBYC),
     bbyc_start_block: getBlockNumber(BBYC),
   };

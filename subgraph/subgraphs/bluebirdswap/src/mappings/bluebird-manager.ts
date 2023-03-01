@@ -4,10 +4,10 @@ import {
   NewBid,
   OwnershipTransferred,
   bluebirdAuction,
-} from '../../generated/bluebirdAuction/bluebirdAuction';
+} from "../../generated/bluebirdAuction/bluebirdAuction";
 
-import { AuctionBid } from '../../../bluebird-old/generated/schema';
-import { BigInt } from '@graphprotocol/graph-ts';
+import { AuctionBid } from "../../../bluebird-old/generated/schema";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleAuctionExtended(event: AuctionExtended): void {}
 

@@ -37,10 +37,9 @@ contract BluebirdFactory is IBluebirdFactory, Ownable {
      */
     function createOptions(address _collectionAddress) public onlyOwner {
         // Check if BB20 token was created
-        address _nftToken = address(
-            grinder.getTokenFromCollection(_collectionAddress)
-        );
-        require(_nftToken != address(0), "NFT Token not created");
+        IBB20 _nftToken = 
+            grinder.getTokenFromCollection(_collectionAddress);
+        require(address(_nftToken) != address(0), "NFT Token not created");
 
         // Get current floor price of NFT from Chainlink
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(

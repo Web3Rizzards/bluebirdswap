@@ -51,7 +51,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         AggregatorV3Interface _nftFeed,
         IBB20 _nftToken,
         address _controller,
-        address _optionsPricing
+        IOptionPricing _optionsPricing
     ) {
         // Price feed of NFT
         nftFeed = _nftFeed;

@@ -1,0 +1,12 @@
+{
+  "network": "mumbai",
+  "abis": "../../node_modules/@bluebird/subgraph-abis/src",
+  "burner_address": "0x0000000000000000000000000000000000000000",
+  "explorer": "https://cronoscan.com",
+  "bluebird_factory_address": "",
+  "bluebird_factory_block": "",
+  "bluebird_manager_address": "",
+  "bluebird_manager_block": "",
+  "bluebird_grinder_address": "",
+  "bluebird_grinder_start_block": ""
+}

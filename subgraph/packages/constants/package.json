@@ -1,0 +1,17 @@
+{
+  "name": "@bluebird/constants",
+  "version": "1.0.0",
+  "description": "Constants for the subgraphs",
+  "license": "MIT",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "prepare:local": "mustache ../../node_modules/@bluebird/subgraph-config/src/localhost.json src/index.template.ts > index.ts",
+    "prepare:cronos": "mustache ../../node_modules/@bluebird/subgraph-config/src/cronos-mainnet.json src/index.template.ts > index.ts",
+    "prepare:cronos-testnet": "mustache ../../node_modules/@bluebird/subgraph-config/src/cronos-testnet.json src/index.template.ts > index.ts",
+    "prepare:arbitrum": "mustache ../../node_modules/@bluebird/subgraph-config/src/arbitrum.json src/index.template.ts > index.ts",
+    "prepare:arbitrum-rinkeby": "mustache ../../node_modules/@bluebird/subgraph-config/src/arbitrum-rinkeby.json src/index.template.ts > index.ts",
+    "prepare:arbitrum-goerli": "mustache ../../node_modules/@bluebird/subgraph-config/src/arbitrum-goerli.json src/index.template.ts > index.ts",
+    "prepare:mainnet": "mustache ../../node_modules/@bluebird/subgraph-config/src/mainnet.json src/index.template.ts > index.ts"
+  }
+}

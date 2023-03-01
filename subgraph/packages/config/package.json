@@ -1,0 +1,10 @@
+{
+  "name": "@bluebird/subgraph-config",
+  "version": "1.0.0",
+  "description": "Configuration data for the subgraphs",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "src"
+  ]
+}

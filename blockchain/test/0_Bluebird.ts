@@ -84,7 +84,14 @@ describe('BluebirdManager', function () {
   it('Should create options', async () => {
     await bluebirdGrinder.connect(user).fractionalizeNFT(bbyc.address, 1);
     await bluebirdManager.createOptions(bbyc.address, mockOracle.address);
-    // Get option address
-    console.log(await bluebirdManager.getOptArray());
+    expect((await bluebirdManager.getOptArray()).length).to.equal(1);
+    // Get contract address of new optionsContract
+    const optArray = await bluebirdManager.getOptArray();
+    console.log('owner: ', owner.address);
+    console.log('optArray: ', optArray[0]);
+    bluebirdOptions = (await ethers.getContractAt('BluebirdOptions', optArray[0])) as BluebirdOptions;
+    for (let i = 0; i < 6; i++) {
+      console.log(await bluebirdOptions.nftOpts(i));
+    }
   });
 });

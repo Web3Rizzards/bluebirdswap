@@ -11,6 +11,8 @@ import "./BB20.sol";
 import "./interfaces/IBluebirdGrinder.sol";
 import "./utils/SetUtils.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+// import console.log
+import "hardhat/console.sol";
 
 contract BluebirdManager is IBluebirdManager, Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -29,7 +31,13 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
     // Modifier to check if caller is options contract
     modifier onlyOptions() {
-        require(optArray.contains(msg.sender), "Only Options Contract can call this function");
+        console.log("msg.sender: %s", msg.sender);
+        console.log("address(this): %s", address(this));
+        console.log("optArray.contains(msg.sender): %s", optArray.contains(msg.sender));
+        require(
+            optArray.contains(msg.sender) || msg.sender == address(this),
+            "Only Options Contract can call this function"
+        );
         _;
     }
 
@@ -44,12 +52,14 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
         // Get current floor price of NFT from Chainlink
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);
-
+        
         // Create new Options
         BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing);
-
+        
         // Add to array
         optArray.add(address(opt));
+
+        IBluebirdOptions(address(opt)).writeOption();
     }
 
     function getOptArray() external view returns (address[] memory) {
@@ -91,8 +101,7 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         uint256 _epoch,
         address _nftToken
     ) external onlyOptions {
-            emit Bought(_user, _order,_amount, _strikePrice, _premium, _isPut, _timestamp, _epoch,_nftToken);
-
+        emit Bought(_user, _order, _amount, _strikePrice, _premium, _isPut, _timestamp, _epoch, _nftToken);
     }
 
     function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external onlyOptions {

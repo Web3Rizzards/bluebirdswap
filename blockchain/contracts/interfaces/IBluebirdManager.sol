@@ -54,8 +54,17 @@ interface IBluebirdManager {
      * @param _epoch Epoch of the option
      * @param _nftToken Address of the NFT Token
      */
-    event Bought(address indexed _user, uint256 indexed _order, uint256 _amount, uint256 _strikePrice, uint256 _premium, bool _isPut, uint256 _timestamp, uint256 _epoch, address _nftToken);
-
+    event Bought(
+        address indexed _user,
+        uint256 indexed _order,
+        uint256 _amount,
+        uint256 _strikePrice,
+        uint256 _premium,
+        bool _isPut,
+        uint256 _timestamp,
+        uint256 _epoch,
+        address _nftToken
+    );
 
     /**
      * @notice Emitted when a user claims profits

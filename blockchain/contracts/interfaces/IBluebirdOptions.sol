@@ -37,4 +37,6 @@ interface IBluebirdOptions {
      * @notice Get premium based on option id
      */
     function getPremium(uint256 _id) external view returns (uint256);
+
+    function writeOption() external;
 }

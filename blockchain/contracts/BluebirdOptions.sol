@@ -100,8 +100,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     //Returns the latest Nft price
     function getNftPrice() public view returns (uint) {
         (uint80 roundID, int price, uint startedAt, uint timeStamp, uint80 answeredInRound) = nftFeed.latestRoundData();
-        // If the round is not complete yet, timestamp is 0
-        require(timeStamp > 0, "Round not complete");
         //Price should never be negative thus cast int to unit is ok
         //Price is 8 decimal places and will require 1e10 correction later to 18 places
         return uint(price);
@@ -116,8 +114,10 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @notice Writes options
      * @dev Write during construction of contract
      */
-    function writeOption() internal {
-        // Require controller address only
+    function writeOption() public {
+        // Require that current epoch has not ended
+        require(block.timestamp < (startTime + EXPIRY), "Epoch has ended");
+        startTime = block.timestamp;
         uint256 nftPrice = getNftPrice();
         uint256 nftTokenPrice = nftPrice / 1000000;
 
@@ -147,7 +147,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch,
             _strikePricesCall,
             _start,
-            EXPIRY // TODO: should be _start + EXPIRY
+            _start + EXPIRY // TODO: should be _start + EXPIRY
         );
         bluebirdManager.emitPutOptionCreatedEvent(
             address(this),
@@ -156,7 +156,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch,
             _strikePricesPut,
             _start,
-            EXPIRY // TODO: should be _start + EXPIRY
+            _start + EXPIRY // TODO: should be _start + EXPIRY
         );
     }
 
@@ -200,7 +200,17 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
         nftOpts[_id].buyers.push(msg.sender);
 
-        bluebirdManager.emitBoughtEvent(msg.sender, _id, _amount, nftOpts[_id].strike, _premium, _isPut, block.timestamp, epoch, address(nftToken));
+        bluebirdManager.emitBoughtEvent(
+            msg.sender,
+            _id,
+            _amount,
+            nftOpts[_id].strike,
+            _premium,
+            _isPut,
+            block.timestamp,
+            epoch,
+            address(nftToken)
+        );
     }
 
     /**

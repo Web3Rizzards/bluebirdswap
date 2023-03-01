@@ -1,8 +1,8 @@
 {
-  "network": "mumbai",
+  "network": "localhost",
   "abis": "../../node_modules/@bluebird/subgraph-abis/src",
   "burner_address": "0x0000000000000000000000000000000000000000",
-  "explorer": "https://cronoscan.com",
+  "explorer": "https://mumbai.polygonscan.com/",
   "bluebird_factory_address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
   "bluebird_factory_block": "",
   "bluebird_manager_address": "",

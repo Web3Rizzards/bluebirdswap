@@ -197,7 +197,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch,
             _strikePricesCall,
             _start,
-            EXPIRY
+            EXPIRY // TODO: should be _start + EXPIRY
         );
         bluebirdManager.emitPutOptionCreatedEvent(
             address(this),
@@ -206,7 +206,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch,
             _strikePricesPut,
             _start,
-            EXPIRY
+            EXPIRY // TODO: should be _start + EXPIRY
         );
     }
 

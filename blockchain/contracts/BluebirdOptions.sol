@@ -11,6 +11,7 @@ import { IOptionPricing } from  "./interfaces/IOptionPricing.sol";
 import { IBluebirdOptions } from  "./interfaces/IBluebirdOptions.sol";
 import { IBB20 } from "./interfaces/IBB20.sol";
 import { BluebirdMath } from "./libraries/BluebirdMath.sol";
+import { IBluebirdManager } from "./interfaces/IBluebirdManager.sol";
 
 
 contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
@@ -22,6 +23,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
     address payable contractAddr;
     address public controller;
+    IBluebirdManager public bluebirdManager;
     IOptionPricing public optionPricing;
 
     uint256 public EXPIRY = 7 days;
@@ -51,12 +53,13 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         AggregatorV3Interface _nftFeed,
         IBB20 _nftToken,
         address _controller,
+        address _bluebirdManager,
         IOptionPricing _optionsPricing
     ) {
         // Price feed of NFT
         nftFeed = _nftFeed;
         nftToken = IERC20(_nftToken);
-
+        bluebirdManager = IBluebirdManager(_bluebirdManager);
         contractAddr = payable(address(this));
         controller = _controller;
         optionPricing = IOptionPricing(_optionsPricing);
@@ -170,24 +173,24 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         epoch+=1;
         epochToStrikePrices[epoch][false] = _strikePricesCall;
         epochToStrikePrices[epoch][true] = _strikePricesPut;
-        emit CallOptionCreated(
-                address(this),
-                address(nftFeed),
-                address(nftToken),
-                epoch,
-                _strikePricesCall,
-                _start,
-                EXPIRY
-            );
-        emit PutOptionCreated(
-                address(this),
-                address(nftFeed),
-                address(nftToken),
-                epoch,
-                _strikePricesPut,
-                _start,
-                EXPIRY
-            );
+        bluebirdManager.emitCallOptionCreatedEvent(
+            address(this),
+            address(nftFeed),
+            address(nftToken),
+            epoch,
+            _strikePricesCall,
+            _start,
+            EXPIRY
+        );
+        bluebirdManager.emitPutOptionCreatedEvent(
+            address(this),
+            address(nftFeed),
+            address(nftToken),
+            epoch,
+            _strikePricesPut,
+            _start,
+            EXPIRY
+        );
     }
 
     /**
@@ -259,7 +262,15 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         );
 
         nftOpts[_id].buyers.push(msg.sender);
-        emit Bought(msg.sender, _id, _amount, nftOpts[_id].strike, _premium, _isPut);
+
+        bluebirdManager.emitBoughtEvent(
+            msg.sender,
+            _id,
+            _amount,
+            nftOpts[_id].strike,
+            _premium,
+            _isPut
+        );
     }
 
     /**
@@ -328,7 +339,11 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             );
         }
         exercised[msg.sender][_id] = true;
-        emit Claimed(msg.sender, _id, _amount);
+        bluebirdManager.emitClaimedEvent(
+            msg.sender,
+            _id,
+            _amount
+        );
     }
 
     function getStrikes(uint256 _epoch, bool _isPut) external view returns (uint256[] memory) {

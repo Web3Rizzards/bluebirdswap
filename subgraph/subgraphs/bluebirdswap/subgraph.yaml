@@ -6,9 +6,9 @@ dataSources:
     kind: ethereum/contract
     network: localhost
     source:
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
       abi: BluebirdManager
-      startBlock: 5
+      startBlock: 6
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -21,7 +21,7 @@ dataSources:
         - name: BluebirdManager
           file: ../../node_modules/@bluebird/subgraph-abis/src/BluebirdManager.json
       eventHandlers:
-        - event: Bought(indexed address,indexed uint256,uint256,uint256,uint256,bool)
+        - event: Bought(indexed address,indexed uint256,uint256,uint256,uint256,bool,uint256,uint256,address)
           handler: handleBought
         - event: CallOptionCreated(indexed address,indexed address,indexed address,uint256,uint256[],uint256,uint256)
           handler: handleCallOptionCreated
@@ -36,9 +36,9 @@ dataSources:
     kind: ethereum/contract
     network: localhost
     source:
-      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
       abi: BluebirdGrinder
-      startBlock: 4
+      startBlock: 5
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

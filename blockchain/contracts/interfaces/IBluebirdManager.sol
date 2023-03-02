@@ -74,6 +74,9 @@ interface IBluebirdManager {
      */
     event Claimed(address indexed _user, uint256 indexed _order, uint256 _profits);
 
+    event CallCreated(uint256 _strike, uint256 _expiry, uint256 _id);
+    event PutCreated(uint256 _strike, uint256 _expiry, uint256 _id);
+
     /**
      * @notice Create a New Call and Put Options for the epoch
      * @param _collectionAddress Address of the NFT Collection
@@ -117,4 +120,8 @@ interface IBluebirdManager {
     ) external;
 
     function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external;
+
+    function emitCallCreatedEvent(uint256 _strike, uint256 _expiry, uint256 _id) external;
+
+    function emitPutCreatedEvent(uint256 _strike, uint256 _expiry, uint256 _id) external;
 }

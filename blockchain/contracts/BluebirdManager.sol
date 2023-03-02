@@ -31,9 +31,6 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
     // Modifier to check if caller is options contract
     modifier onlyOptions() {
-        console.log("msg.sender: %s", msg.sender);
-        console.log("address(this): %s", address(this));
-        console.log("optArray.contains(msg.sender): %s", optArray.contains(msg.sender));
         require(
             optArray.contains(msg.sender) || msg.sender == address(this),
             "Only Options Contract can call this function"
@@ -106,5 +103,13 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
     function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external onlyOptions {
         emit Claimed(_user, _order, _profits);
+    }
+
+    function emitCallCreatedEvent(uint256 _strike, uint256 _expiry, uint256 currentId) external onlyOptions {
+        emit CallCreated(_strike, _expiry, currentId);
+    }
+
+    function emitPutCreatedEvent(uint256 _strike, uint256 _expiry, uint256 currentId) external onlyOptions {
+        emit PutCreated(_strike, _expiry, currentId);
     }
 }

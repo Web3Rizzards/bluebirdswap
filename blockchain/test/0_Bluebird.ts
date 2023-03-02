@@ -92,11 +92,9 @@ describe('BluebirdManager', function () {
     expect((await bluebirdManager.getOptArray()).length).to.equal(1);
     // Get contract address of new optionsContract
     const optArray = await bluebirdManager.getOptArray();
-    console.log('owner: ', owner.address);
-    console.log('optArray: ', optArray[0]);
     bluebirdOptions = (await ethers.getContractAt('BluebirdOptions', optArray[0])) as BluebirdOptions;
     for (let i = 0; i < 6; i++) {
-      console.log(await bluebirdOptions.nftOpts(i));
+      // console.log(await bluebirdOptions.nftOpts(i));
     }
     const bb20Address = await bluebirdGrinder.nftAddressToTokenAddress(bbyc.address);
     bb20 = (await ethers.getContractAt('BB20', bb20Address)) as BB20;
@@ -104,10 +102,17 @@ describe('BluebirdManager', function () {
     await bb20.connect(user).approve(bluebirdOptions.address, ethers.constants.MaxUint256);
     await bluebirdOptions.connect(user2).depositNftToken(ethers.utils.parseEther('1000'));
     let _getPremium = await bluebirdOptions.getPremium(0);
-    await bluebirdOptions.connect(user).buy(0, 2, false, _getPremium);
+    console.log('Before buying balance: ', (await bb20.balanceOf(user.address)).toString());
+
+    await bluebirdOptions.connect(user).buy(0, 100000000, false, _getPremium);
     // One week passes
     await ethers.provider.send('evm_increaseTime', [604800]);
+    // Set price on oracle
+    await mockOracle.setPrice(ethers.utils.parseEther('140'));
+    // Check balance of user erc20 token
+    console.log('Before balance: ', (await bb20.balanceOf(user.address)).toString());
     // Try to exercise
     await bluebirdOptions.connect(user).exercise(0);
+    console.log('After balance: ', (await bb20.balanceOf(user.address)).toString());
   });
 });

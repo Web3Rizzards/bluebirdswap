@@ -34,4 +34,8 @@ contract MockOracle is AggregatorV3Interface {
     {
         return (0, price, 0, 0, 0);
     }
+
+    function setPrice(int256 _price) public {
+        price = _price;
+    }
 }

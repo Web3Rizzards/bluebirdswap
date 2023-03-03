@@ -65,17 +65,17 @@ interface IBluebirdManager {
         uint256 _epoch,
         address _nftToken
     );
-
     /**
-     * @notice Emitted when a user claims profits
+     * @notice Emitted when a user exercises an option
      * @param _user User's address
-     * @param _order Order Index
-     * @param _profits User's profits
+     * @param _id id of option
+     * @param _pnl profit or loss number
+     * @param _profit true for profit and false for loss -> this indicates _pnl is positive or negative
      */
-    event Claimed(address indexed _user, uint256 indexed _order, uint256 _profits);
+    event Exercised(address indexed _user, uint256 _id, uint256 _pnl, bool _profit);
 
-    event CallCreated(uint256 _strike, uint256 _expiry, uint256 _id);
-    event PutCreated(uint256 _strike, uint256 _expiry, uint256 _id);
+    event CallCreated(uint256 _strike, uint256 _amount, uint256 _expiry, uint256 _id);
+    event PutCreated(uint256 _strike, uint256 _amount, uint256 _expiry, uint256 _id);
 
     /**
      * @notice Create a New Call and Put Options for the epoch
@@ -119,9 +119,9 @@ interface IBluebirdManager {
         address _nftToken
     ) external;
 
-    function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external;
+    function emitCallCreatedEvent(uint256 _strike, uint256 _amount, uint256 _expiry, uint256 _id) external;
 
-    function emitCallCreatedEvent(uint256 _strike, uint256 _expiry, uint256 _id) external;
+    function emitPutCreatedEvent(uint256 _strike, uint256 _amount, uint256 _expiry, uint256 _id) external;
 
-    function emitPutCreatedEvent(uint256 _strike, uint256 _expiry, uint256 _id) external;
+    function emitExerciseEvent(address _user, uint256 _id, uint256 _pnl, bool _profit) external;
 }

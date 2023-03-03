@@ -11,7 +11,6 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 // Interfaces
 import { IOptionPricing } from "./interfaces/IOptionPricing.sol";
-import "hardhat/console.sol";
 
 contract OptionPricing is Ownable, IOptionPricing {
     using SafeMath for uint256;

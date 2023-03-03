@@ -51,12 +51,10 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);
 
         // Create new Options
-        BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing);
+        BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing, msg.sender);
 
         // Add to array
         optArray.add(address(opt));
-
-        IBluebirdOptions(address(opt)).writeOption();
     }
 
     function getOptArray() external view returns (address[] memory) {
@@ -101,15 +99,25 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         emit Bought(_user, _order, _amount, _strikePrice, _premium, _isPut, _timestamp, _epoch, _nftToken);
     }
 
-    function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external onlyOptions {
-        emit Claimed(_user, _order, _profits);
+    function emitCallCreatedEvent(
+        uint256 _strike,
+        uint256 _amount,
+        uint256 _expiry,
+        uint256 _currentId
+    ) external onlyOptions {
+        emit CallCreated(_strike, _amount, _expiry, _currentId);
     }
 
-    function emitCallCreatedEvent(uint256 _strike, uint256 _expiry, uint256 currentId) external onlyOptions {
-        emit CallCreated(_strike, _expiry, currentId);
+    function emitPutCreatedEvent(
+        uint256 _strike,
+        uint256 _amount,
+        uint256 _expiry,
+        uint256 _currentId
+    ) external onlyOptions {
+        emit PutCreated(_strike, _amount, _expiry, _currentId);
     }
 
-    function emitPutCreatedEvent(uint256 _strike, uint256 _expiry, uint256 currentId) external onlyOptions {
-        emit PutCreated(_strike, _expiry, currentId);
+    function emitExerciseEvent(address _user, uint256 _id, uint256 _pnl, bool _profit) external onlyOptions{
+        emit Exercised(_user, _id, _pnl, _profit);
     }
 }

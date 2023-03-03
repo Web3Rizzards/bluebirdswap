@@ -138,30 +138,12 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
             currentId += 2;
 
-            bluebirdManager.emitCallCreatedEvent(_strikePricesCall[i], _start + EXPIRY, currentId);
-            bluebirdManager.emitPutCreatedEvent(_strikePricesPut[i], _start + EXPIRY, currentId + 1);
+            bluebirdManager.emitCallOptionCreatedEvent(address(this), currentId, epoch, address(nftToken),_strikePricesCall[i], _start, _start + EXPIRY);
+            bluebirdManager.emitPutOptionCreatedEvent(address(this), currentId + 1, epoch, address(nftToken),_strikePricesCall[i], _start, _start + EXPIRY);
         }
         epoch += 1;
         epochToStrikePrices[epoch][false] = _strikePricesCall;
         epochToStrikePrices[epoch][true] = _strikePricesPut;
-        bluebirdManager.emitCallOptionCreatedEvent(
-            address(this),
-            address(nftFeed),
-            address(nftToken),
-            epoch,
-            _strikePricesCall,
-            _start,
-            _start + EXPIRY
-        );
-        bluebirdManager.emitPutOptionCreatedEvent(
-            address(this),
-            address(nftFeed),
-            address(nftToken),
-            epoch,
-            _strikePricesPut,
-            _start,
-            _start + EXPIRY
-        );
     }
 
     /**

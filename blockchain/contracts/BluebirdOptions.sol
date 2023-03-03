@@ -28,7 +28,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     IOptionPricing public optionPricing;
 
     // Options expiry
-    uint256 public EXPIRY = 7 days;
+    uint256 public EXPIRY = 5 minutes;
 
     // Start time of buying options
     uint256 public startTimeBuy;

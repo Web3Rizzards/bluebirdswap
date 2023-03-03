@@ -48,11 +48,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
 
   const entries = [
     {
-      name: 'BluebirdFactory.address',
-      value: getAddress(bluebirdFactory),
-      blockNumber: getBlockNumber(bluebirdFactory),
-    },
-    {
       name: 'BluebirdGrinder.address',
       value: getAddress(bluebirdGrinder),
       blockNumber: getBlockNumber(bluebirdGrinder),
@@ -69,8 +64,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
 
   // Export Addresses and block numbers
   const addressAndBlockNumbers = {
-    bluebird_factory_address: getAddress(bluebirdFactory),
-    bluebird_factory_start_block: getBlockNumber(bluebirdFactory),
     bluebird_grinder_address: getAddress(bluebirdGrinder),
     bluebird_grinder_start_block: getBlockNumber(bluebirdGrinder),
     bluebird_manager_address: getAddress(bluebirdManager),
@@ -98,5 +91,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
   );
 };
 
-// module.exports.dependencies = ['Phase1'];
 module.exports.tags = ['Setter'];

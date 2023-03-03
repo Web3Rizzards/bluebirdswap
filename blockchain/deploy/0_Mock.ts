@@ -7,23 +7,29 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy('MockUSDC', {
+  // await deploy('MockUSDC', {
+  //   from: deployer,
+  //   log: true,
+  //   args: [],
+  // });
+
+  await deploy('Azuki', {
     from: deployer,
     log: true,
     args: [],
   });
 
-  await deploy('BBYC', {
+  await deploy('BAYC', {
     from: deployer,
     log: true,
     args: [],
   });
 
-  await deploy('MockOracle', {
-    from: deployer,
-    log: true,
-    args: [ethers.utils.parseEther('100'), 18, 'Mock Oracle'],
-  });
+  // await deploy('MockOracle', {
+  //   from: deployer,
+  //   log: true,
+  //   args: [ethers.utils.parseEther('100'), 18, 'Mock Oracle'],
+  // });
 };
 
 module.exports.tags = ['Mock'];

@@ -1,0 +1,8 @@
+{
+  "network": "goerli",
+  "abis": "../../node_modules/@bluebird/subgraph-abis/src",
+  "burner_address": "0x0000000000000000000000000000000000000000",
+  "explorer": "https://goerli.etherscan.io/",
+  "azuki_price_feed_address": "0x11BB0bf5F9473683CBC2439Ae5E7C58d5Fc44361",
+  "azuki_price_feed_start_block": "7634644"
+}

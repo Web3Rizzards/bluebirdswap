@@ -1,0 +1,6 @@
+type PriceData @entity(immutable: true) {
+  id: ID! # {ContractAddress}-{OptionId}
+  roundId: BigInt!
+  answer: BigInt!
+  timestamp: BigInt!
+}

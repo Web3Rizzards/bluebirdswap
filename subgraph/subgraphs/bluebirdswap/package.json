@@ -1,7 +1,7 @@
 {
-  "name": "marketplace",
+  "name": "@subgraphs/bluebirdswap",
   "version": "1.0.0",
-  "description": "Subgraph that powers the bluebird Marketplace",
+  "description": "Subgraph that powers the bluebird swap",
   "license": "MIT",
   "scripts": {
     "codegen": "graph codegen",

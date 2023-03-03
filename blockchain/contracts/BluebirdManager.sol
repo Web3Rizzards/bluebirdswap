@@ -11,8 +11,6 @@ import "./BB20.sol";
 import "./interfaces/IBluebirdGrinder.sol";
 import "./utils/SetUtils.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-// import console.log
-import "hardhat/console.sol";
 
 contract BluebirdManager is IBluebirdManager, Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -21,11 +19,8 @@ contract BluebirdManager is IBluebirdManager, Ownable {
     IOptionPricing public optionPricing;
     IBluebirdGrinder public grinder;
 
-    address public controller;
-
-    constructor(IOptionPricing _optionPricing, address _controller, IBluebirdGrinder _grinder) {
+    constructor(IOptionPricing _optionPricing, IBluebirdGrinder _grinder) {
         optionPricing = _optionPricing;
-        controller = _controller;
         grinder = _grinder;
     }
 
@@ -45,22 +40,37 @@ contract BluebirdManager is IBluebirdManager, Ownable {
     function createOptions(address _collectionAddress, address _nftFeedAddress) public onlyOwner {
         // Check if BB20 token was created
         IBB20 _nftToken = grinder.getTokenFromCollection(_collectionAddress);
+
+        // If BB20 token was not created, create it
         require(address(_nftToken) != address(0), "NFT Token not created");
 
         // Get current floor price of NFT from Chainlink
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);
 
         // Create new Options
-        BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing, msg.sender);
+        BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, address(this), optionPricing, msg.sender);
 
-        // Add to array
+        // Add nft collection options contract to array
         optArray.add(address(opt));
     }
 
+    /**
+     * @notice Function to retrieve options array
+     */
     function getOptArray() external view returns (address[] memory) {
         return optArray.toArray();
     }
 
+    /**
+     * @notice Proxy function to emit event from options contract
+     * @param _contractAddress Address of options contract
+     * @param _optionId Option ID
+     * @param _epoch Epoch
+     * @param _nftToken NFT Token Address
+     * @param _strikePrice Strike Price
+     * @param _start Start Time
+     * @param _expiry Expiry Time
+     */
     function emitCallOptionCreatedEvent(
         address _contractAddress,
         uint256 _optionId,
@@ -70,9 +80,19 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         uint256 _start,
         uint256 _expiry
     ) external onlyOptions {
-        emit CallOptionCreated(_contractAddress, _optionId, _epoch, _nftToken,_strikePrice, _start, _expiry);
+        emit CallOptionCreated(_contractAddress, _optionId, _epoch, _nftToken, _strikePrice, _start, _expiry);
     }
 
+    /**
+     * @notice Proxy function to emit event from options contract
+     * @param _contractAddress Address of options contract
+     * @param _optionId Option ID
+     * @param _epoch Epoch
+     * @param _nftToken NFT Token Address
+     * @param _strikePrice Strike Price
+     * @param _start Start Time
+     * @param _expiry Expiry Time
+     */
     function emitPutOptionCreatedEvent(
         address _contractAddress,
         uint256 _optionId,
@@ -82,9 +102,19 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         uint256 _start,
         uint256 _expiry
     ) external onlyOptions {
-        emit PutOptionCreated(_contractAddress, _optionId, _epoch, _nftToken,_strikePrice, _start, _expiry);
+        emit PutOptionCreated(_contractAddress, _optionId, _epoch, _nftToken, _strikePrice, _start, _expiry);
     }
 
+    /**
+     * @notice Proxy function to emit event from options contract
+     * @param _contractAddress Address of options contract
+     * @param _user User Address
+     * @param _order Order ID
+     * @param _amount Amount
+     * @param _premium Premium
+     * @param _timestamp Timestamp
+     * @param _epoch Epoch
+     */
     function emitBoughtEvent(
         address _contractAddress,
         address _user,
@@ -96,9 +126,22 @@ contract BluebirdManager is IBluebirdManager, Ownable {
     ) external onlyOptions {
         emit Bought(_contractAddress, _user, _order, _amount, _premium, _timestamp, _epoch);
     }
-          
-    function emitExerciseEvent(address _contractAddress, address _user, uint256 _id, uint256 _pnl, bool _profit) external onlyOptions{
+
+    /**
+     * @notice Proxy function to emit event from options contract
+     * @param _contractAddress Address of options contract
+     * @param _user User Address
+     * @param _id Order ID
+     * @param _pnl PnL
+     * @param _profit Profit
+     */
+    function emitExerciseEvent(
+        address _contractAddress,
+        address _user,
+        uint256 _id,
+        uint256 _pnl,
+        bool _profit
+    ) external onlyOptions {
         emit Exercised(_contractAddress, _user, _id, _pnl, _profit);
     }
-
 }

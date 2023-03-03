@@ -14,7 +14,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   // Chain Dependent Settings
   let contract = await deploy('BluebirdManager', {
     from: deployer,
-    args: [optionsPricing.address, deployer, grinder.address],
+    args: [optionsPricing.address, grinder.address],
     logs: true,
   });
 };

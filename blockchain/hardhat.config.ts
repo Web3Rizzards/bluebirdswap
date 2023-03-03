@@ -60,11 +60,6 @@ module.exports = {
       // accounts: [PRIVATE_KEY],
     },
     hardhat: {
-      // TODO: Add snapshot block
-      // forking: {
-      //   url: process.env.ALCHEMY_PROVIDER_MAINNET,
-      //   block: 0,
-      // },
       blockGasLimit: 10000000000,
       mining: {
         auto: true,

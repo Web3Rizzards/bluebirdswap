@@ -71,7 +71,13 @@ interface IBluebirdManager {
      * @param _profits profit or loss number
      * @param _profit true for profit and false for loss -> this indicates _pnl is positive or negative
      */
-    event Exercised(address indexed _contractAddress, address indexed _user, uint256 indexed _id, uint256 _profits, bool _profit);
+    event Exercised(
+        address indexed _contractAddress,
+        address indexed _user,
+        uint256 indexed _id,
+        uint256 _profits,
+        bool _profit
+    );
 
     /**
      * @notice Create a New Call and Put Options for the epoch
@@ -113,6 +119,11 @@ interface IBluebirdManager {
         uint256 _epoch
     ) external;
 
-
-    function emitExerciseEvent(address _contractAddress, address _user, uint256 _id, uint256 _pnl, bool _profit) external;
+    function emitExerciseEvent(
+        address _contractAddress,
+        address _user,
+        uint256 _id,
+        uint256 _pnl,
+        bool _profit
+    ) external;
 }

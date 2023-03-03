@@ -114,7 +114,7 @@ describe('BluebirdManager', function () {
     );
     console.log("User's ETH balance at the start: ", (await user.getBalance()).toString());
 
-    await bluebirdOptions.connect(user).buy(0, false, _getPremium);
+    await bluebirdOptions.connect(user).buy(0, { value: _getPremium });
     console.log(
       'Fractionalised NFT token balance of user after buying call option 1 time: ',
       (await bb20.balanceOf(user.address)).toString()

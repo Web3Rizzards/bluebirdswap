@@ -7,15 +7,22 @@ pragma solidity ^0.8.11;
 /// @notice The contract will only encapsulate puts or calls only
 /// @notice The contract shall be named as {NFT_SYMBOL}-{EPOCH}-{PUT/CALL}
 interface IBluebirdOptions {
+    // Options stored in arrays of structs
+    struct Option {
+        uint strike; // Price in USD (18 decimal places) option allows buyer to purchase tokens at
+        uint expiry; // Unix timestamp of expiration time
+        uint amount; // Amount of tokens option allows buyer to purchase
+        bool isPut; // True if option is a put, false if call
+    }
+
     /**
      * @notice Buy an option
      * @param _id ID of the option
-     * @param _getPremium premium viewed before buying
      * @dev Option must have started
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
      */
-    function buy(uint256 _id, uint256 _getPremium) external payable;
+    function buy(uint256 _id) external payable;
 
     /**
      * @notice Claim profits, if any
@@ -35,5 +42,4 @@ interface IBluebirdOptions {
      * @notice Get premium based on option id
      */
     function getPremium(uint256 _id) external view returns (uint256);
-
 }

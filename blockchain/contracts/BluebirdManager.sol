@@ -65,26 +65,26 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
     function emitCallOptionCreatedEvent(
         address _contractAddress,
-        address _nftFeed,
+        uint256 _optionId,
+        uint256 _epoch,
         address _nftToken,
-        uint256 epoch,
-        uint256[] memory _strikePrices,
+        uint256 _strikePrice,
         uint256 _start,
         uint256 _expiry
     ) external onlyOptions {
-        emit CallOptionCreated(_contractAddress, _nftFeed, _nftToken, epoch, _strikePrices, _start, _expiry);
+        emit CallOptionCreated(_contractAddress, _optionId, _epoch, _nftToken,_strikePrice, _start, _expiry);
     }
 
     function emitPutOptionCreatedEvent(
         address _contractAddress,
-        address _nftFeed,
+        uint256 _optionId,
+        uint256 _epoch,
         address _nftToken,
-        uint256 epoch,
-        uint256[] memory _strikePrices,
+        uint256 _strikePrice,
         uint256 _start,
         uint256 _expiry
     ) external onlyOptions {
-        emit PutOptionCreated(_contractAddress, _nftFeed, _nftToken, epoch, _strikePrices, _start, _expiry);
+        emit PutOptionCreated(_contractAddress, _optionId, _epoch, _nftToken,_strikePrice, _start, _expiry);
     }
 
     function emitBoughtEvent(
@@ -100,16 +100,9 @@ contract BluebirdManager is IBluebirdManager, Ownable {
     ) external onlyOptions {
         emit Bought(_user, _order, _amount, _strikePrice, _premium, _isPut, _timestamp, _epoch, _nftToken);
     }
-
+          
     function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external onlyOptions {
         emit Claimed(_user, _order, _profits);
     }
 
-    function emitCallCreatedEvent(uint256 _strike, uint256 _expiry, uint256 currentId) external onlyOptions {
-        emit CallCreated(_strike, _expiry, currentId);
-    }
-
-    function emitPutCreatedEvent(uint256 _strike, uint256 _expiry, uint256 currentId) external onlyOptions {
-        emit PutCreated(_strike, _expiry, currentId);
-    }
 }

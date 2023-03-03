@@ -279,12 +279,14 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
   
 
     //Purchase a call option, needs desired token, ID of option and payment
-    function buy(uint256 _id, bool _isPut, uint256 _getPremium) external payable nonReentrant {
+    function buy(uint256 _id, uint256 _getPremium) external payable nonReentrant {
         require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
         // Buy amount is equal to 2/5 of the total amount of options
         uint256 _amount = nftOpts[_id].amount / 5;
         console.log("Amount of options to buy: ", _amount / 1 ether);
         console.log("Max buy for call options: ", maxBuyCall / 1 ether);
+        bool _isPut = nftOpts[_id].isPut;
+
         // Set max buy
         if (_isPut) {
             require(_amount  <= maxBuyPut, "Amount exceeds max buy");
@@ -302,6 +304,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _premium;
         // Get base IV
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
+        // Get isPut
 
         // Get strike
         uint256 _strike = nftOpts[_id].strike;

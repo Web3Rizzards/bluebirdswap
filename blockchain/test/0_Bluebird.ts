@@ -1,15 +1,11 @@
 import 'dotenv/config';
 
+import { BB20, BBYC, BluebirdGrinder, BluebirdManager, BluebirdOptions, MockOracle, OptionPricing } from '../typechain';
 import { BigNumber, BigNumberish } from 'ethers';
 import { deployments, ethers } from 'hardhat';
+
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { BBYC } from '../typechain/BBYC';
-import { BluebirdOptions } from '../typechain/BluebirdOptions';
-import { BluebirdGrinder } from '../typechain/BluebirdGrinder';
-import { BluebirdManager } from '../typechain';
-import { OptionPricing } from '../typechain';
-import { BB20 } from '../typechain/BB20';
-import { MockOracle } from '../typechain/MockOracle';
+
 const { expect } = require('chai');
 
 let owner: SignerWithAddress;

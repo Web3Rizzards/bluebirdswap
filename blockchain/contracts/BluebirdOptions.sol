@@ -167,9 +167,9 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         // Empty address array to track buyers of options
         address[] memory empty;
         // Determine amount to write based on amount of NFT tokens to write call options
-        uint256 amountToWriteCall = maxBuyCall / 3;
+        uint256 amountToWriteCall = maxBuyCall / 3; // TODO: @junmtan why 3
         // Determine amount to write based on amount of ETH to write put options
-        uint256 amountToWritePut = maxBuyPut / 3;
+        uint256 amountToWritePut = maxBuyPut / 3; // TODO: @junmtan why 3
         // Loop through strike prices and write options
         for (uint i = 0; i < _strikePricesCall.length; i++) {
             // Write call options

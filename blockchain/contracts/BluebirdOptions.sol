@@ -215,51 +215,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             );
     }
 
-    //Purchase a call option, needs desired token, ID of option and payment
-    function buy(uint256 _id, uint256 _amount, bool _isPut, uint256 _getPremium) external {
-        // Add max buy
-        require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
-
-        uint256 nftTokenPrice = getNftPrice() / 1000000;
-
-        uint256 _expiry = nftOpts[_id].expiry;
-        uint256 _premium;
-        uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
-        uint256 _strike = nftOpts[_id].strike;
-        if (_isPut) {
-            _premium = optionPricing.getOptionPrice(true, _expiry, _strike, nftTokenPrice, _baseIv);
-        } else {
-            _premium = optionPricing.getOptionPrice(false, _expiry, _strike, nftTokenPrice, _baseIv);
-        }
-        // Calculate required collateral based on option's strike price and the amount being purchased
-        uint256 requiredCollateral = _strike * _amount;
-        userToOptionIdToAmount[msg.sender][_id] += _amount;
-        // If premium is not within 1% of view premium, revert
-        require(_premium >= _getPremium - (_getPremium / 100), "Premium is not within 1% of view premium");
-        //Transfer premium payment from buyer to writer
-        require(
-            nftToken.transferFrom(msg.sender, address(this), _premium),
-            "Incorrect amount of NFT Token sent for premium"
-        );
-
-        // Transfer collateral from buyer to protocol
-        require(
-            nftToken.transferFrom(msg.sender, address(this), requiredCollateral),
-            "Incorrect amount of NFT Token sent for collateral"
-        );
-
-        nftOpts[_id].buyers.push(msg.sender);
-
-        bluebirdManager.emitBoughtEvent(
-            address(this),
-            msg.sender,
-            _id,
-            _amount,
-            _premium,
-            block.timestamp,
-            epoch
-        );
-    }
+   
     //Returns the latest Nft price
     function getNftPrice() public view returns (uint) {
         (, int price, , , ) = nftFeed.latestRoundData();

@@ -21,15 +21,15 @@ dataSources:
         - name: BluebirdManager
           file: {{{ abis }}}/BluebirdManager.json
       eventHandlers:
-        - event: Bought(indexed address,indexed uint256,uint256,uint256,uint256,bool)
+        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,bool,uint256,uint256,address)
           handler: handleBought
-        - event: CallOptionCreated(indexed address,indexed address,indexed address,uint256,uint256[],uint256,uint256)
+        - event: CallOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
           handler: handleCallOptionCreated
-        - event: Claimed(indexed address,indexed uint256,uint256)
+        - event: Claimed(indexed address,indexed address,indexed uint256,uint256)
           handler: handleClaimed
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-        - event: PutOptionCreated(indexed address,indexed address,indexed address,uint256,uint256[],uint256,uint256)
+        - event: PutOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
           handler: handleOptionCreated
       file: ./src/mappings/bluebird-manager.ts
   - name: BluebirdGrinder

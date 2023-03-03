@@ -26,13 +26,19 @@
             {
                 "indexed": true,
                 "internalType": "address",
+                "name": "_contractAddress",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
                 "name": "_user",
                 "type": "address"
             },
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "_order",
+                "name": "_optionId",
                 "type": "uint256"
             },
             {
@@ -92,12 +98,18 @@
             },
             {
                 "indexed": true,
-                "internalType": "address",
-                "name": "_nftFeed",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "_optionId",
+                "type": "uint256"
             },
             {
-                "indexed": true,
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_epoch",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
                 "internalType": "address",
                 "name": "_nftToken",
                 "type": "address"
@@ -105,14 +117,8 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "epoch",
+                "name": "_strikePrice",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256[]",
-                "name": "_strikePrices",
-                "type": "uint256[]"
             },
             {
                 "indexed": false,
@@ -133,6 +139,12 @@
     {
         "anonymous": false,
         "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "_contractAddress",
+                "type": "address"
+            },
             {
                 "indexed": true,
                 "internalType": "address",
@@ -185,12 +197,18 @@
             },
             {
                 "indexed": true,
-                "internalType": "address",
-                "name": "_nftFeed",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "_optionId",
+                "type": "uint256"
             },
             {
-                "indexed": true,
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "_epoch",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
                 "internalType": "address",
                 "name": "_nftToken",
                 "type": "address"
@@ -198,14 +216,8 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "epoch",
+                "name": "_strikePrice",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256[]",
-                "name": "_strikePrices",
-                "type": "uint256[]"
             },
             {
                 "indexed": false,
@@ -256,6 +268,11 @@
     },
     {
         "inputs": [
+            {
+                "internalType": "address",
+                "name": "_contractAddress",
+                "type": "address"
+            },
             {
                 "internalType": "address",
                 "name": "_user",
@@ -315,9 +332,14 @@
                 "type": "address"
             },
             {
-                "internalType": "address",
-                "name": "_nftFeed",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "_optionId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_epoch",
+                "type": "uint256"
             },
             {
                 "internalType": "address",
@@ -326,13 +348,8 @@
             },
             {
                 "internalType": "uint256",
-                "name": "epoch",
+                "name": "_strikePrice",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "_strikePrices",
-                "type": "uint256[]"
             },
             {
                 "internalType": "uint256",
@@ -352,6 +369,11 @@
     },
     {
         "inputs": [
+            {
+                "internalType": "address",
+                "name": "_contractAddress",
+                "type": "address"
+            },
             {
                 "internalType": "address",
                 "name": "_user",
@@ -381,9 +403,14 @@
                 "type": "address"
             },
             {
-                "internalType": "address",
-                "name": "_nftFeed",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "_optionId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_epoch",
+                "type": "uint256"
             },
             {
                 "internalType": "address",
@@ -392,13 +419,8 @@
             },
             {
                 "internalType": "uint256",
-                "name": "epoch",
+                "name": "_strikePrice",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "_strikePrices",
-                "type": "uint256[]"
             },
             {
                 "internalType": "uint256",

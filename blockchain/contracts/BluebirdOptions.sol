@@ -91,6 +91,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     // Admin Functions
 
     // Set liquidity providing time
+    // TODO: Add Natspec
     function setLiquidityProvidingTime(
         uint256 _liquidityProvidingTime
     ) external onlyOwner {
@@ -98,12 +99,13 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     }
 
     // Set expiry
+    // TODO: Add Natspec
     function setExpiry(uint256 _expiry) external onlyOwner {
         EXPIRY = _expiry;
     }
 
     // Internal functions
-
+    // TODO: Add Natspec
     function _calculateStrikePrices(
         uint256 _floorPrice,
         bool _isPut
@@ -125,6 +127,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     }
 
     // Function to start an epoch
+    // TODO: Add Natspec
     function _startEpoch() internal {
         require(
             block.timestamp > (startTimeEpoch + liquidityProvidingTime),
@@ -409,11 +412,12 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             epoch
         );
     }
-
+    // TODO: Add natspec
     function calculateAmountETH(uint256 _id) public view returns (uint256) {
         return nftOpts[_id].strike * userToOptionIdToAmount[msg.sender][_id];
     }
 
+    // TODO: Add natspec
     function exercise(uint256 _id) external payable {
         require(
             userToOptionIdToAmount[msg.sender][_id] > 0,

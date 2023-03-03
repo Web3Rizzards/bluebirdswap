@@ -3,8 +3,7 @@
     "private": true,
     "license": "MIT",
     "workspaces": [
-        "bluebird/*",
-        "marketplace/*",
+        "subgraphs/*",
         "packages/*"
     ],
     "scripts": {

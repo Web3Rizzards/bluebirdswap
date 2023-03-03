@@ -1,0 +1,25 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - name: AzukiPriceFeed
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      address: "{{ azuki_price_feed_address }}"
+      abi: AzukiPriceFeed
+      startBlock: {{ azuki_price_feed_start_block }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Price
+      abis:
+        - name: AzukiPriceFeed
+          file: {{{ abis }}}/AccessControlledOffchainAggregator.json
+      eventHandlers:
+        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
+          handler: handleAnswerUpdated
+      file: ./src/mappings/pricefeed.ts
+ 

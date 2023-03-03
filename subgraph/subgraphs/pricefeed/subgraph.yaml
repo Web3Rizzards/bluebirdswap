@@ -1,0 +1,25 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - name: AzukiPriceFeed
+    kind: ethereum/contract
+    network: goerli
+    source:
+      address: "0x11BB0bf5F9473683CBC2439Ae5E7C58d5Fc44361"
+      abi: AzukiPriceFeed
+      startBlock: 7634644
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Price
+      abis:
+        - name: AzukiPriceFeed
+          file: ../../node_modules/@bluebird/subgraph-abis/src/AccessControlledOffchainAggregator.json
+      eventHandlers:
+        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
+          handler: handleAnswerUpdated
+      file: ./src/mappings/pricefeed.ts
+ 

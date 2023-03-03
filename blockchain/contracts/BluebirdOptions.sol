@@ -336,6 +336,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             "Option is expired and cannot be bought"
         );
         // Buy amount is equal to 2/5 of the total amount of options
+        // TODO: @junmtan why are we hardcoding the number of options bought?
         uint256 _amount = nftOpts[_id].amount / 5;
         console.log("Amount of options to buy: ", _amount / 1 ether);
         console.log("Max buy for call options: ", maxBuyCall / 1 ether);
@@ -418,6 +419,10 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     }
 
     // TODO: Add natspec
+    /**
+     * @notice Exercise an option based on `_id`
+     * @param _id
+     */
     function exercise(uint256 _id) external payable {
         require(
             userToOptionIdToAmount[msg.sender][_id] > 0,

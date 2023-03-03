@@ -10,13 +10,12 @@ interface IBluebirdOptions {
     /**
      * @notice Buy an option
      * @param _id ID of the option
-     * @param _isPut Is the option a put option
      * @param _getPremium premium viewed before buying
      * @dev Option must have started
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
      */
-    function buy(uint256 _id, bool _isPut, uint256 _getPremium) external payable;
+    function buy(uint256 _id, uint256 _getPremium) external payable;
 
     /**
      * @notice Claim profits, if any

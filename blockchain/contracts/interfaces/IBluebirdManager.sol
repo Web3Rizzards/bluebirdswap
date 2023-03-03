@@ -46,6 +46,7 @@ interface IBluebirdManager {
 
     /**
      * @notice Emitted when an option is bought
+     * @param _contractAddress Address of the contract
      * @param _user User's address
      * @param _optionId Option Index
      * @param _amount Lots purchased
@@ -57,6 +58,7 @@ interface IBluebirdManager {
      * @param _nftToken Address of the NFT Token
      */
     event Bought(
+        address indexed _contractAddress,
         address indexed _user,
         uint256 indexed _optionId,
         uint256 _amount,
@@ -70,11 +72,12 @@ interface IBluebirdManager {
 
     /**
      * @notice Emitted when a user claims profits
+     * @param _contractAddress Address of the contract
      * @param _user User's address
      * @param _order Order Index
      * @param _profits User's profits
      */
-    event Claimed(address indexed _user, uint256 indexed _order, uint256 _profits);
+    event Claimed(address indexed _contractAddress, address indexed _user, uint256 indexed _order, uint256 _profits);
 
 
     /**
@@ -108,6 +111,7 @@ interface IBluebirdManager {
     ) external;
 
     function emitBoughtEvent(
+        address _contractAddress,
         address _user,
         uint256 _order,
         uint256 _amount,
@@ -119,5 +123,5 @@ interface IBluebirdManager {
         address _nftToken
     ) external;
 
-    function emitClaimedEvent(address _user, uint256 _order, uint256 _profits) external;
+    function emitClaimedEvent(address _contractAddress, address _user, uint256 _order, uint256 _profits) external;
 }

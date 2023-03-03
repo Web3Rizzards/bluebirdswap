@@ -174,13 +174,14 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _expiry = nftOpts[_id].expiry;
         uint256 _premium;
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
+        uint256 _strike = nftOpts[_id].strike;
         if (_isPut) {
-            _premium = optionPricing.getOptionPrice(true, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
+            _premium = optionPricing.getOptionPrice(true, _expiry, _strike, nftTokenPrice, _baseIv);
         } else {
-            _premium = optionPricing.getOptionPrice(false, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
+            _premium = optionPricing.getOptionPrice(false, _expiry, _strike, nftTokenPrice, _baseIv);
         }
         // Calculate required collateral based on option's strike price and the amount being purchased
-        uint256 requiredCollateral = nftOpts[_id].strike * _amount;
+        uint256 requiredCollateral = _strike * _amount;
         userToOptionIdToAmount[msg.sender][_id] += _amount;
         // If premium is not within 1% of view premium, revert
         require(_premium >= _getPremium - (_getPremium / 100), "Premium is not within 1% of view premium");
@@ -199,10 +200,11 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         nftOpts[_id].buyers.push(msg.sender);
 
         bluebirdManager.emitBoughtEvent(
+            address(this),
             msg.sender,
             _id,
             _amount,
-            nftOpts[_id].strike,
+            _strike,
             _premium,
             _isPut,
             block.timestamp,
@@ -262,7 +264,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             // Transfer collateral back from protocol to user
             require(nftToken.transfer(msg.sender, collateral), "Error transferring collateral");
             require(nftToken.transfer(msg.sender, uint256(_amount)), "Error transferring NFT Token");
-            bluebirdManager.emitClaimedEvent(msg.sender, _id, collateral + uint256(_amount));
+            bluebirdManager.emitClaimedEvent(address(this), msg.sender, _id, collateral + uint256(_amount));
         } else {
             console.log("Lose");
             // Minus the loss from the collateral
@@ -270,7 +272,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 nftToken.transfer(msg.sender, uint256(int256(collateral) + _amount)),
                 "Error transferring NFT Token"
             );
-            bluebirdManager.emitClaimedEvent(msg.sender, _id, collateral + uint256(_amount));
+            bluebirdManager.emitClaimedEvent(address(this), msg.sender, _id, collateral + uint256(_amount));
         }
     }
 

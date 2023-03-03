@@ -60,11 +60,6 @@ module.exports = {
       // accounts: [PRIVATE_KEY],
     },
     hardhat: {
-      // TODO: Add snapshot block
-      // forking: {
-      //   url: process.env.ALCHEMY_PROVIDER_MAINNET,
-      //   block: 0,
-      // },
       blockGasLimit: 10000000000,
       mining: {
         auto: true,
@@ -94,7 +89,7 @@ module.exports = {
       accounts: [PRIVATE_KEY],
     },
     mumbai: {
-      url: 'https://rpc-mumbai.matic.today',
+      url: 'https://rpc-mumbai.maticvigil.com/',
       chainId: 80001,
       accounts: [PRIVATE_KEY],
       saveDeployments: true,

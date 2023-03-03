@@ -8,7 +8,7 @@ library BluebirdMath {
      * @param _values Array of values
      * @return Standard deviation of `_values`
      */
-    function computeStandardDeviation(uint256[7] memory _values) internal pure returns (uint256) {
+    function computeStandardDeviation(uint256[] memory _values) internal pure returns (uint256) {
         uint256 n = _values.length;
         uint256 mean = 0;
 

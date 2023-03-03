@@ -1,15 +1,11 @@
 import 'dotenv/config';
 
+import { BB20, BBYC, BluebirdGrinder, BluebirdManager, BluebirdOptions, MockOracle, OptionPricing } from '../typechain';
 import { BigNumber, BigNumberish } from 'ethers';
 import { deployments, ethers } from 'hardhat';
+
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { BBYC } from '../typechain/BBYC';
-import { BluebirdOptions } from '../typechain/BluebirdOptions';
-import { BluebirdGrinder } from '../typechain/BluebirdGrinder';
-import { BluebirdManager } from '../typechain';
-import { OptionPricing } from '../typechain';
-import { BB20 } from '../typechain/BB20';
-import { MockOracle } from '../typechain/MockOracle';
+
 const { expect } = require('chai');
 
 let owner: SignerWithAddress;
@@ -114,7 +110,7 @@ describe('BluebirdManager', function () {
     );
     console.log("User's ETH balance at the start: ", (await user.getBalance()).toString());
 
-    await bluebirdOptions.connect(user).buy(0, false, _getPremium);
+    await bluebirdOptions.connect(user).buy(0, { value: _getPremium });
     console.log(
       'Fractionalised NFT token balance of user after buying call option 1 time: ',
       (await bb20.balanceOf(user.address)).toString()

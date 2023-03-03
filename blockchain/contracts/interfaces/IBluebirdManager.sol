@@ -45,7 +45,7 @@ interface IBluebirdManager {
     /**
      * @notice Emitted when an option is bought
      * @param _user User's address
-     * @param _order Order Index
+     * @param _optionId Option Index
      * @param _amount Lots purchased
      * @param _strikePrice Strike price of purchase
      * @param _premium Premium paid
@@ -56,7 +56,7 @@ interface IBluebirdManager {
      */
     event Bought(
         address indexed _user,
-        uint256 indexed _order,
+        uint256 indexed _optionId,
         uint256 _amount,
         uint256 _strikePrice,
         uint256 _premium,

@@ -278,7 +278,11 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
   
 
-    //Purchase a call option, needs desired token, ID of option and payment
+    /**
+     * @notice Buy an option based on `_id`
+     * @param _id Index of the option
+     * @param _getPremium Maximum premium to pay for the option // TODO: @junmtan If premium paid is always lower during purchase, there is no need for this
+     */
     function buy(uint256 _id, uint256 _getPremium) external payable nonReentrant {
         require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
         // Buy amount is equal to 2/5 of the total amount of options

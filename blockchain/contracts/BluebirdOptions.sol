@@ -271,7 +271,8 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @param numOptions number of options
      * @param spotPrice spot price of the underlying asset at the time of exercise
      */
-    function calculatePnL(
+    // TODO: @junmtan unused function
+    function calculatePnL( 
         bool isPut,
         int256 exercisePrice,
         int256 numOptions,
@@ -418,10 +419,9 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         return nftOpts[_id].strike * userToOptionIdToAmount[msg.sender][_id];
     }
 
-    // TODO: Add natspec
     /**
      * @notice Exercise an option based on `_id`
-     * @param _id
+     * @param _id Id of option to exercise
      */
     function exercise(uint256 _id) external payable {
         require(

@@ -2,20 +2,42 @@ enum TokenStandard {
   ERC721
 }
 
-type Collection @entity {
+# Collection Entity
+type Collection @entity(immutable: true) {
   id: ID!
-
-  contract: String!
+  contract: Bytes!
   name: String!
-  tokens: [Token!]! @derivedFrom(field: "collection")
+  tokens: Token!
 }
 
+# Token Entity
 type Token @entity {
   id: ID!
-
   collection: Collection!
-
-  name: String
-  owner: String
+  name: String!
+  owner: Bytes!
   tokenId: BigInt!
+}
+
+type Trade @entity {
+  id: ID!
+  option: Option!
+  premium: BigInt!
+  size: BigInt!
+  owner: Bytes!
+  exercised: Boolean!
+  isProfit: Boolean!
+  pl: BigInt!
+  timestamp: BigInt!
+}
+
+type Option @entity(immutable: true) {
+  id: ID! # {ContractAddress}-{OptionId}
+  token: Token!
+  epoch: BigInt!
+  strikePrice: BigInt!
+  isPut: Boolean!
+  startTime: BigInt!
+  expiry: BigInt!
+  trades: [Trade!]! @derivedFrom(field: "option")
 }

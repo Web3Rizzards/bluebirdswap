@@ -46,7 +46,8 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     uint256 public maxBuyPut;
     mapping(address => mapping(uint256 => uint256)) public userDeposits;
     mapping(uint256 => Option) public nftOpts;
-    mapping(address => mapping(uint256 => uint256)) public userToOptionIdToAmount;
+    mapping(address => mapping(uint256 => uint256))
+        public userToOptionIdToAmount;
     mapping(address => mapping(uint256 => bool)) public exercised;
     // Mapping of epoch to bool to strike prices
     mapping(uint256 => mapping(bool => uint256[])) public epochToStrikePrices;
@@ -90,18 +91,25 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     // Admin Functions
 
     // Set liquidity providing time
-    function setLiquidityProvidingTime(uint256 _liquidityProvidingTime) external onlyOwner {
+    // TODO: Add Natspec
+    function setLiquidityProvidingTime(
+        uint256 _liquidityProvidingTime
+    ) external onlyOwner {
         liquidityProvidingTime = _liquidityProvidingTime;
     }
 
     // Set expiry
+    // TODO: Add Natspec
     function setExpiry(uint256 _expiry) external onlyOwner {
         EXPIRY = _expiry;
     }
 
     // Internal functions
-
-    function _calculateStrikePrices(uint256 _floorPrice, bool _isPut) internal pure returns (uint256[] memory) {
+    // TODO: Add Natspec
+    function _calculateStrikePrices(
+        uint256 _floorPrice,
+        bool _isPut
+    ) internal pure returns (uint256[] memory) {
         uint256[] memory strikePrices = new uint256[](3);
         if (_isPut) {
             // Calculate from floor price 10% lower, 20% lower, 30% lower
@@ -118,96 +126,16 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         return strikePrices;
     }
 
-     // Function to start an epoch
+    // Function to start an epoch
+    // TODO: Add Natspec
     function _startEpoch() internal {
-        require(block.timestamp > (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time has ended");
+        require(
+            block.timestamp > (startTimeEpoch + liquidityProvidingTime),
+            "Liquidity providing time has ended"
+        );
         startTimeEpoch = block.timestamp;
         epochEnded = false;
         console.log("Epoch started");
-    }
-
-
-    // View functions
-
-    /**
-     * @notice Get premium of an option
-     * @param _id Id of contract
-     */
-    function getPremium(uint256 _id) public view returns (uint256) {
-        // Get price of NFT
-        uint256 _nftPrice = getNftPrice();
-        // Get price of NFT token
-        uint256 _nftTokenPrice = _nftPrice / 1000000;
-        uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
-        return
-            optionPricing.getOptionPrice(
-                nftOpts[_id].isPut,
-                nftOpts[_id].expiry,
-                nftOpts[_id].strike,
-                _nftTokenPrice,
-                _baseIv
-            );
-    }
-
-    function getStrikes(uint256 _epoch, bool _isPut) external view returns (uint256[] memory) {
-        return epochToStrikePrices[_epoch][_isPut];
-    }
-
-    //Returns the latest Nft price
-    function getNftPrice() public view returns (uint) {
-        (, int price, , , ) = nftFeed.latestRoundData();
-        //Price should never be negative thus cast int to unit is ok
-        //Price is 8 decimal places and will require 1e10 correction later to 18 places
-        return uint(price);
-    }
-
-    /**
-     * @notice Calculate PnL for an option holder
-     * @param isPut is put option
-     * @param exercisePrice strike price of the option
-     * @param numOptions number of options
-     * @param spotPrice spot price of the underlying asset at the time of exercise
-     */
-    function calculatePnL(
-        bool isPut,
-        int256 exercisePrice,
-        int256 numOptions,
-        int256 spotPrice
-    ) public pure returns (int256) {
-        int256 pnl = 0;
-
-        // Calculate profit or loss on the option position
-        if (isPut) {
-            if (spotPrice < exercisePrice) {
-                pnl = int256(exercisePrice - spotPrice) * int256(numOptions);
-            }
-        } else {
-            if (spotPrice > exercisePrice) {
-                pnl = int256(spotPrice - exercisePrice) * int256(numOptions);
-            }
-        }
-
-        return pnl;
-    }
-
-    // Liquidity providing functions
-
-    function depositNftToken(uint amount) public nonReentrant {
-        // Require that it is only during liquidity providing time
-        require(block.timestamp < (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time has ended");
-        // Take NFT tokens
-        require(nftToken.transferFrom(msg.sender, address(this), amount), "Incorrect amount of NFT Token sent");
-        maxBuyCall += amount;
-        userDeposits[msg.sender][0] += amount;
-    }
-
-    // Deposit eth function
-    function depositETH() public payable nonReentrant {
-        require(block.timestamp < (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time has ended");
-        // Take ETH from user
-        require(msg.value > 0, "Incorrect amount of ETH sent");
-        maxBuyPut += msg.value;
-        userDeposits[msg.sender][1] += msg.value;
     }
 
     /**
@@ -226,16 +154,22 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 nftTokenPrice = nftPrice / 1000000;
 
         // Get strike prices of call and put options
-        uint256[] memory _strikePricesCall = _calculateStrikePrices(nftTokenPrice, false);
-        uint256[] memory _strikePricesPut = _calculateStrikePrices(nftTokenPrice, true);
+        uint256[] memory _strikePricesCall = _calculateStrikePrices(
+            nftTokenPrice,
+            false
+        );
+        uint256[] memory _strikePricesPut = _calculateStrikePrices(
+            nftTokenPrice,
+            true
+        );
 
         uint256 _start = block.timestamp;
         // Empty address array to track buyers of options
         address[] memory empty;
         // Determine amount to write based on amount of NFT tokens to write call options
-        uint256 amountToWriteCall = maxBuyCall / 3;
+        uint256 amountToWriteCall = maxBuyCall / 3; // TODO: @junmtan why 3
         // Determine amount to write based on amount of ETH to write put options
-        uint256 amountToWritePut = maxBuyPut / 3;
+        uint256 amountToWritePut = maxBuyPut / 3; // TODO: @junmtan why 3
         // Loop through strike prices and write options
         for (uint i = 0; i < _strikePricesCall.length; i++) {
             // Write call options
@@ -265,8 +199,24 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             currentId += 2;
 
             // Emit events for individual strike prices
-            bluebirdManager.emitCallCreatedEvent(_strikePricesCall[i], amountToWriteCall, _start + EXPIRY, currentId);
-            bluebirdManager.emitPutCreatedEvent(_strikePricesPut[i], amountToWritePut, _start + EXPIRY, currentId + 1);
+            bluebirdManager.emitCallOptionCreatedEvent(
+                address(this),
+                currentId,
+                epoch,
+                address(nftToken),
+                _strikePricesCall[i],
+                _start,
+                _start + EXPIRY
+            );
+            bluebirdManager.emitPutOptionCreatedEvent(
+                address(this),
+                currentId + 1,
+                epoch,
+                address(nftToken),
+                _strikePricesCall[i],
+                _start,
+                _start + EXPIRY
+            );
         }
         // Increment epoch
         epoch += 1;
@@ -275,36 +225,127 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         epochToStrikePrices[epoch][true] = _strikePricesPut;
         _startEpoch();
         // Emit events for epoch
-        bluebirdManager.emitCallOptionCreatedEvent(
-            address(this),
-            address(nftFeed),
-            address(nftToken),
-            epoch,
-            _strikePricesCall,
-            _start,
-            _start + EXPIRY
-        );
-        bluebirdManager.emitPutOptionCreatedEvent(
-            address(this),
-            address(nftFeed),
-            address(nftToken),
-            epoch,
-            _strikePricesPut,
-            _start,
-            _start + EXPIRY
-        );
     }
 
-    //Purchase a call option, needs desired token, ID of option and payment
-    function buy(uint256 _id, bool _isPut, uint256 _getPremium) external payable nonReentrant {
-        require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
+    // View functions
+
+    /**
+     * @notice Get premium of an option
+     * @param _id Id of contract
+     */
+    function getPremium(uint256 _id) public view returns (uint256) {
+        // Get price of NFT
+        uint256 _nftPrice = getNftPrice();
+        // Get price of NFT token
+        uint256 _nftTokenPrice = _nftPrice / 1000000;
+        uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
+        return
+            optionPricing.getOptionPrice(
+                nftOpts[_id].isPut,
+                nftOpts[_id].expiry,
+                nftOpts[_id].strike,
+                _nftTokenPrice,
+                _baseIv
+            );
+    }
+
+    //Returns the latest Nft price
+    function getNftPrice() public view returns (uint) {
+        (, int price, , , ) = nftFeed.latestRoundData();
+        //Price should never be negative thus cast int to unit is ok
+        //Price is 8 decimal places and will require 1e10 correction later to 18 places
+        return uint(price);
+    }
+
+    function getStrikes(
+        uint256 _epoch,
+        bool _isPut
+    ) external view returns (uint256[] memory) {
+        return epochToStrikePrices[_epoch][_isPut];
+    }
+
+    /**
+     * @notice Calculate PnL for an option holder
+     * @param isPut is put option
+     * @param exercisePrice strike price of the option
+     * @param numOptions number of options
+     * @param spotPrice spot price of the underlying asset at the time of exercise
+     */
+    // TODO: @junmtan unused function
+    function calculatePnL( 
+        bool isPut,
+        int256 exercisePrice,
+        int256 numOptions,
+        int256 spotPrice
+    ) public pure returns (int256) {
+        int256 pnl = 0;
+
+        // Calculate profit or loss on the option position
+        if (isPut) {
+            if (spotPrice < exercisePrice) {
+                pnl = int256(exercisePrice - spotPrice) * int256(numOptions);
+            }
+        } else {
+            if (spotPrice > exercisePrice) {
+                pnl = int256(spotPrice - exercisePrice) * int256(numOptions);
+            }
+        }
+
+        return pnl;
+    }
+
+    // Liquidity providing functions
+
+    function depositNftToken(uint amount) public nonReentrant {
+        // Require that it is only during liquidity providing time
+        require(
+            block.timestamp < (startTimeEpoch + liquidityProvidingTime),
+            "Liquidity providing time has ended"
+        );
+        // Take NFT tokens
+        require(
+            nftToken.transferFrom(msg.sender, address(this), amount),
+            "Incorrect amount of NFT Token sent"
+        );
+        maxBuyCall += amount;
+        userDeposits[msg.sender][0] += amount;
+    }
+
+    // Deposit eth function
+    function depositETH() public payable nonReentrant {
+        require(
+            block.timestamp < (startTimeEpoch + liquidityProvidingTime),
+            "Liquidity providing time has ended"
+        );
+        // Take ETH from user
+        require(msg.value > 0, "Incorrect amount of ETH sent");
+        maxBuyPut += msg.value;
+        userDeposits[msg.sender][1] += msg.value;
+    }
+
+    /**
+     * @notice Buy an option based on `_id`
+     * @param _id Index of the option
+     * @param _getPremium Maximum premium to pay for the option // TODO: @junmtan If premium paid is always lower during purchase, there is no need for this
+     */
+    function buy(
+        uint256 _id,
+        uint256 _getPremium
+    ) external payable nonReentrant {
+        require(
+            nftOpts[_id].expiry > block.timestamp,
+            "Option is expired and cannot be bought"
+        );
         // Buy amount is equal to 2/5 of the total amount of options
+        // TODO: @junmtan why are we hardcoding the number of options bought?
         uint256 _amount = nftOpts[_id].amount / 5;
         console.log("Amount of options to buy: ", _amount / 1 ether);
         console.log("Max buy for call options: ", maxBuyCall / 1 ether);
+        bool _isPut = nftOpts[_id].isPut;
+
         // Set max buy
         if (_isPut) {
-            require(_amount  <= maxBuyPut, "Amount exceeds max buy");
+            require(_amount <= maxBuyPut, "Amount exceeds max buy");
             maxBuyPut -= _amount;
         } else {
             require(_amount <= maxBuyCall, "Amount exceeds max buy");
@@ -319,47 +360,78 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _premium;
         // Get base IV
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(prices);
+        // Get isPut
+
+        // Get strike
+        uint256 _strike = nftOpts[_id].strike;
         // Get premium based on option type
         if (_isPut) {
-            _premium = optionPricing.getOptionPrice(true, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
+            _premium = optionPricing.getOptionPrice(
+                true,
+                _expiry,
+                _strike,
+                nftTokenPrice,
+                _baseIv
+            );
         } else {
-            _premium = optionPricing.getOptionPrice(false, _expiry, nftOpts[_id].strike, nftTokenPrice, _baseIv);
+            _premium = optionPricing.getOptionPrice(
+                false,
+                _expiry,
+                _strike,
+                nftTokenPrice,
+                _baseIv
+            );
         }
 
         console.log("Premium: ", _premium);
         // If premium is not within 1% of view premium, revert
-        require(_premium >= _getPremium - (_getPremium / 100), "Premium is not within 1% of view premium");
+        require(
+            _premium >= _getPremium - (_getPremium / 100),
+            "Premium is not within 1% of view premium"
+        );
         // Record amount of options bought by user
         userToOptionIdToAmount[msg.sender][_id] += _amount / 1 ether;
         //Transfer premium payment from buyer to protocol
         uint256 _amountTokens = _premium / nftTokenPrice;
         console.log("NFT token price: ", nftTokenPrice);
         console.log("Amount of tokens to transfer: ", _amountTokens);
-        require(nftToken.transferFrom(msg.sender, address(this), _amountTokens), "Premium payment failed");
+        require(
+            nftToken.transferFrom(msg.sender, address(this), _amountTokens),
+            "Premium payment failed"
+        );
 
         // Add buyer to list of buyers
         nftOpts[_id].buyers.push(msg.sender);
 
         // Emit event
         bluebirdManager.emitBoughtEvent(
+            address(this),
             msg.sender,
             _id,
             _amount,
-            nftOpts[_id].strike,
             _premium,
-            _isPut,
             block.timestamp,
-            epoch,
-            address(nftToken)
+            epoch
         );
     }
-
-    function calculateAmountETH(uint256 _id) public view returns (uint256){
-         return nftOpts[_id].strike * userToOptionIdToAmount[msg.sender][_id];
+    // TODO: Add natspec
+    function calculateAmountETH(uint256 _id) public view returns (uint256) {
+        return nftOpts[_id].strike * userToOptionIdToAmount[msg.sender][_id];
     }
+
+    /**
+     * @notice Exercise an option based on `_id`
+     * @param _id Id of option to exercise
+     */
     function exercise(uint256 _id) external payable {
-        require(userToOptionIdToAmount[msg.sender][_id] > 0, "You do not own this option");
-        require(!exercised[msg.sender][_id], "Option has already been exercised");
+        require(
+            userToOptionIdToAmount[msg.sender][_id] > 0,
+            "You do not own this option"
+        );
+        require(
+            !exercised[msg.sender][_id],
+            "Option has already been exercised"
+        );
         require(nftOpts[_id].expiry < block.timestamp, "Option is not expired");
         uint256 nftTokenPrice = getNftPrice() / 1000000;
         uint256 _amountETH;
@@ -370,11 +442,20 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 _profit = true;
                 // Call buyers pay strike price * amount to protocol
                 _amountETH = calculateAmountETH(_id);
-                console.log("Amount of ETH to send to protocol: %s", _amountETH);
-                require(msg.value == _amountETH, "Incorrect amount of ETH sent to buy NFT Token");
+                console.log(
+                    "Amount of ETH to send to protocol: %s",
+                    _amountETH
+                );
+                require(
+                    msg.value == _amountETH,
+                    "Incorrect amount of ETH sent to buy NFT Token"
+                );
                 // Transfer from protocol to user NFT token
                 require(
-                    nftToken.transfer(msg.sender, userToOptionIdToAmount[msg.sender][_id] * 1 ether),
+                    nftToken.transfer(
+                        msg.sender,
+                        userToOptionIdToAmount[msg.sender][_id] * 1 ether
+                    ),
                     "Insufficient amount of NFT Token sent to user"
                 );
             }
@@ -385,21 +466,29 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 _amountETH = calculateAmountETH(_id);
                 // Transfer from user to protocol amount of token
                 require(
-                    nftToken.transferFrom(msg.sender, address(this), userToOptionIdToAmount[msg.sender][_id] * 1 ether),
+                    nftToken.transferFrom(
+                        msg.sender,
+                        address(this),
+                        userToOptionIdToAmount[msg.sender][_id] * 1 ether
+                    ),
                     "Insufficient amount of NFT Token sent to protocol"
                 );
                 // Transfer from protocol to user eth
-                (bool success, ) = payable(msg.sender).call{ value: _amountETH }("");
+                (bool success, ) = payable(msg.sender).call{value: _amountETH}(
+                    ""
+                );
                 require(success, "Insufficient amount of ETH sent to user");
             }
         }
         exercised[msg.sender][_id] = true;
         // Emit event
         bluebirdManager.emitExerciseEvent(
+            address(this),
             msg.sender,
             _id,
             _amountETH,
             _profit
         );
     }
+
 }

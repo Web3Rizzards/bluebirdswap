@@ -63,61 +63,42 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
     function emitCallOptionCreatedEvent(
         address _contractAddress,
-        address _nftFeed,
+        uint256 _optionId,
+        uint256 _epoch,
         address _nftToken,
-        uint256 epoch,
-        uint256[] memory _strikePrices,
+        uint256 _strikePrice,
         uint256 _start,
         uint256 _expiry
     ) external onlyOptions {
-        emit CallOptionCreated(_contractAddress, _nftFeed, _nftToken, epoch, _strikePrices, _start, _expiry);
+        emit CallOptionCreated(_contractAddress, _optionId, _epoch, _nftToken,_strikePrice, _start, _expiry);
     }
 
     function emitPutOptionCreatedEvent(
         address _contractAddress,
-        address _nftFeed,
+        uint256 _optionId,
+        uint256 _epoch,
         address _nftToken,
-        uint256 epoch,
-        uint256[] memory _strikePrices,
+        uint256 _strikePrice,
         uint256 _start,
         uint256 _expiry
     ) external onlyOptions {
-        emit PutOptionCreated(_contractAddress, _nftFeed, _nftToken, epoch, _strikePrices, _start, _expiry);
+        emit PutOptionCreated(_contractAddress, _optionId, _epoch, _nftToken,_strikePrice, _start, _expiry);
     }
 
     function emitBoughtEvent(
+        address _contractAddress,
         address _user,
         uint256 _order,
         uint256 _amount,
-        uint256 _strikePrice,
         uint256 _premium,
-        bool _isPut,
         uint256 _timestamp,
-        uint256 _epoch,
-        address _nftToken
+        uint256 _epoch
     ) external onlyOptions {
-        emit Bought(_user, _order, _amount, _strikePrice, _premium, _isPut, _timestamp, _epoch, _nftToken);
+        emit Bought(_contractAddress, _user, _order, _amount, _premium, _timestamp, _epoch);
+    }
+          
+    function emitExerciseEvent(address _contractAddress, address _user, uint256 _id, uint256 _pnl, bool _profit) external onlyOptions{
+        emit Exercised(_contractAddress, _user, _id, _pnl, _profit);
     }
 
-    function emitCallCreatedEvent(
-        uint256 _strike,
-        uint256 _amount,
-        uint256 _expiry,
-        uint256 _currentId
-    ) external onlyOptions {
-        emit CallCreated(_strike, _amount, _expiry, _currentId);
-    }
-
-    function emitPutCreatedEvent(
-        uint256 _strike,
-        uint256 _amount,
-        uint256 _expiry,
-        uint256 _currentId
-    ) external onlyOptions {
-        emit PutCreated(_strike, _amount, _expiry, _currentId);
-    }
-
-    function emitExerciseEvent(address _user, uint256 _id, uint256 _pnl, bool _profit) external onlyOptions{
-        emit Exercised(_user, _id, _pnl, _profit);
-    }
 }

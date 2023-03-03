@@ -2,13 +2,13 @@ specVersion: 0.0.5
 schema:
   file: ./schema.graphql
 dataSources:
-  - name: BluebirdFactory
+  - name: BluebirdManager
     kind: ethereum/contract
-    network: mumbai
+    network: localhost
     source:
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
-      abi: BluebirdFactory
-      startBlock: 5
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+      abi: BluebirdManager
+      startBlock: 6
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -18,21 +18,27 @@ dataSources:
         - BidIncreased
         - NewBid
       abis:
-        - name: BluebirdFactory
-          file: ../../node_modules/@bluebird/subgraph-abis/src/BluebirdFactory.json
+        - name: BluebirdManager
+          file: ../../node_modules/@bluebird/subgraph-abis/src/BluebirdManager.json
       eventHandlers:
-        - event: CallOptionCreated(indexed address,indexed address,uint256,uint256,uint256,uint256)
+        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,bool,uint256,uint256,address)
+          handler: handleBought
+        - event: CallOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
           handler: handleCallOptionCreated
-        - event: PutOptionCreated(indexed address,indexed address,uint256,uint256,uint256,uint256)
-          handler: handlePutOptionCreated
-      file: ./src/mappings/bluebird-factory.ts
+        - event: Claimed(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleClaimed
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PutOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
+          handler: handleOptionCreated
+      file: ./src/mappings/bluebird-manager.ts
   - name: BluebirdGrinder
     kind: ethereum/contract
-    network: mumbai
+    network: localhost
     source:
-      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
       abi: BluebirdGrinder
-      startBlock: 4
+      startBlock: 5
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -42,17 +48,17 @@ dataSources:
         - ExpeditionStarted
         - RewardsClaimed
       abis:
-        - name: bluebird
+        - name: BluebirdGrinder
           file: ../../node_modules/@bluebird/subgraph-abis/src/BluebirdGrinder.json
       eventHandlers:
         - event: Redeemed(indexed address,uint256,address)
-          handler: handleAuctionExtended
-        - event: Fractionalized(indexed address,indexed address,uint256,address)
-          handler: handleAuctionExtended
+          handler: handleRedeemed
+        - event: Fractionalised(indexed address,indexed address,uint256,address)
+          handler: handleFractionalised
       file: ./src/mappings/bluebird-grinder.ts
   - name: BBYC
     kind: ethereum/contract
-    network: mumbai
+    network: localhost
     source:
       address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
       abi: ERC721

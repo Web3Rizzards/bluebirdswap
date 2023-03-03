@@ -2,13 +2,13 @@ specVersion: 0.0.5
 schema:
   file: ./schema.graphql
 dataSources:
-  - name: BluebirdFactory
+  - name: BluebirdManager
     kind: ethereum/contract
     network: {{ network }}
     source:
-      address: "{{ bluebird_factory_address }}"
-      abi: BluebirdFactory
-      startBlock: {{ bluebird_factory_start_block }}
+      address: "{{ bluebird_manager_address }}"
+      abi: BluebirdManager
+      startBlock: {{ bluebird_manager_start_block }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -18,14 +18,20 @@ dataSources:
         - BidIncreased
         - NewBid
       abis:
-        - name: BluebirdFactory
-          file: {{{ abis }}}/BluebirdFactory.json
+        - name: BluebirdManager
+          file: {{{ abis }}}/BluebirdManager.json
       eventHandlers:
-        - event: CallOptionCreated(indexed address,indexed address,uint256,uint256,uint256,uint256)
+        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,bool,uint256,uint256,address)
+          handler: handleBought
+        - event: CallOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
           handler: handleCallOptionCreated
-        - event: PutOptionCreated(indexed address,indexed address,uint256,uint256,uint256,uint256)
-          handler: handlePutOptionCreated
-      file: ./src/mappings/bluebird-factory.ts
+        - event: Claimed(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleClaimed
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PutOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
+          handler: handleOptionCreated
+      file: ./src/mappings/bluebird-manager.ts
   - name: BluebirdGrinder
     kind: ethereum/contract
     network: {{ network }}
@@ -42,13 +48,13 @@ dataSources:
         - ExpeditionStarted
         - RewardsClaimed
       abis:
-        - name: bluebird
+        - name: BluebirdGrinder
           file: {{{ abis }}}/BluebirdGrinder.json
       eventHandlers:
         - event: Redeemed(indexed address,uint256,address)
-          handler: handleAuctionExtended
-        - event: Fractionalized(indexed address,indexed address,uint256,address)
-          handler: handleAuctionExtended
+          handler: handleRedeemed
+        - event: Fractionalised(indexed address,indexed address,uint256,address)
+          handler: handleFractionalised
       file: ./src/mappings/bluebird-grinder.ts
   - name: BBYC
     kind: ethereum/contract

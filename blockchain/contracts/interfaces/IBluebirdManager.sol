@@ -50,35 +50,28 @@ interface IBluebirdManager {
      * @param _user User's address
      * @param _optionId Option Index
      * @param _amount Lots purchased
-     * @param _strikePrice Strike price of purchase
      * @param _premium Premium paid
-     * @param _isPut Is the option a put option
      * @param _timestamp Timestamp of purchase
      * @param _epoch Epoch of the option
-     * @param _nftToken Address of the NFT Token
      */
     event Bought(
         address indexed _contractAddress,
         address indexed _user,
         uint256 indexed _optionId,
         uint256 _amount,
-        uint256 _strikePrice,
         uint256 _premium,
-        bool _isPut,
         uint256 _timestamp,
-        uint256 _epoch,
-        address _nftToken
+        uint256 _epoch
     );
-
     /**
      * @notice Emitted when a user claims profits
      * @param _contractAddress Address of the contract
      * @param _user User's address
-     * @param _order Order Index
-     * @param _profits User's profits
+     * @param _id id of option
+     * @param _profits profit or loss number
+     * @param _profit true for profit and false for loss -> this indicates _pnl is positive or negative
      */
-    event Claimed(address indexed _contractAddress, address indexed _user, uint256 indexed _order, uint256 _profits);
-
+    event Exercised(address indexed _contractAddress, address indexed _user, uint256 indexed _id, uint256 _profits, bool _profit);
 
     /**
      * @notice Create a New Call and Put Options for the epoch
@@ -115,13 +108,11 @@ interface IBluebirdManager {
         address _user,
         uint256 _order,
         uint256 _amount,
-        uint256 _strikePrice,
         uint256 _premium,
-        bool _isPut,
         uint256 _timestamp,
-        uint256 _epoch,
-        address _nftToken
+        uint256 _epoch
     ) external;
 
-    function emitClaimedEvent(address _contractAddress, address _user, uint256 _order, uint256 _profits) external;
+
+    function emitExerciseEvent(address _contractAddress, address _user, uint256 _id, uint256 _pnl, bool _profit) external;
 }

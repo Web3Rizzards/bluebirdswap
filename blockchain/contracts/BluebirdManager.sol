@@ -51,12 +51,10 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);
 
         // Create new Options
-        BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing);
+        BluebirdOptions opt = new BluebirdOptions(_nftFeed, _nftToken, controller, address(this), optionPricing, msg.sender);
 
         // Add to array
         optArray.add(address(opt));
-
-        IBluebirdOptions(address(opt)).writeOption();
     }
 
     function getOptArray() external view returns (address[] memory) {
@@ -92,18 +90,15 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         address _user,
         uint256 _order,
         uint256 _amount,
-        uint256 _strikePrice,
         uint256 _premium,
-        bool _isPut,
         uint256 _timestamp,
-        uint256 _epoch,
-        address _nftToken
+        uint256 _epoch
     ) external onlyOptions {
-        emit Bought(_contractAddress, _user, _order, _amount, _strikePrice, _premium, _isPut, _timestamp, _epoch, _nftToken);
+        emit Bought(_contractAddress, _user, _order, _amount, _premium, _timestamp, _epoch);
     }
           
-    function emitClaimedEvent(address _contractAddress, address _user, uint256 _order, uint256 _profits) external onlyOptions {
-        emit Claimed(_contractAddress, _user, _order, _profits);
+    function emitExerciseEvent(address _contractAddress, address _user, uint256 _id, uint256 _pnl, bool _profit) external onlyOptions{
+        emit Exercised(_contractAddress, _user, _id, _pnl, _profit);
     }
 
 }

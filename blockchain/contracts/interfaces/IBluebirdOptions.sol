@@ -10,21 +10,20 @@ interface IBluebirdOptions {
     /**
      * @notice Buy an option
      * @param _id ID of the option
-     * @param _amount amount of lots to buy
      * @param _isPut Is the option a put option
      * @param _getPremium premium viewed before buying
      * @dev Option must have started
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
      */
-    function buy(uint256 _id, uint256 _amount, bool _isPut, uint256 _getPremium) external;
+    function buy(uint256 _id, bool _isPut, uint256 _getPremium) external payable;
 
     /**
      * @notice Claim profits, if any
      * @param _id Order Index
      * @dev Must be owner of order
      */
-    function exercise(uint256 _id) external;
+    function exercise(uint256 _id) external payable;
 
     /**
      * @notice Get strike prices of the current contract
@@ -38,5 +37,4 @@ interface IBluebirdOptions {
      */
     function getPremium(uint256 _id) external view returns (uint256);
 
-    function writeOption() external;
 }

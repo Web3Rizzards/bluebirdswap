@@ -93,26 +93,49 @@ describe('BluebirdManager', function () {
     // Get contract address of new optionsContract
     const optArray = await bluebirdManager.getOptArray();
     bluebirdOptions = (await ethers.getContractAt('BluebirdOptions', optArray[0])) as BluebirdOptions;
-    for (let i = 0; i < 6; i++) {
-      // console.log(await bluebirdOptions.nftOpts(i));
-    }
+    const liquidityProviderTime = await bluebirdOptions.liquidityProvidingTime();
     const bb20Address = await bluebirdGrinder.nftAddressToTokenAddress(bbyc.address);
     bb20 = (await ethers.getContractAt('BB20', bb20Address)) as BB20;
     await bb20.connect(user2).approve(bluebirdOptions.address, ethers.constants.MaxUint256);
     await bb20.connect(user).approve(bluebirdOptions.address, ethers.constants.MaxUint256);
+    console.log('Initial price of NFT: 100 ETH');
     await bluebirdOptions.connect(user2).depositNftToken(ethers.utils.parseEther('1000'));
+    console.log('User 2 deposits 1000 nft tokens');
+    await bluebirdOptions.connect(user2).depositETH({ value: ethers.utils.parseEther('3000') });
+    console.log('User 2 deposits 3000 ETH');
+    // Wait 30 seconds
+    await ethers.provider.send('evm_increaseTime', [30]);
+    // Write options
+    await bluebirdOptions.writeOption();
     let _getPremium = await bluebirdOptions.getPremium(0);
-    console.log('Before buying balance: ', (await bb20.balanceOf(user.address)).toString());
+    console.log(
+      'Fractionalised NFT token balance of user at the start: ',
+      (await bb20.balanceOf(user.address)).toString()
+    );
+    console.log("User's ETH balance at the start: ", (await user.getBalance()).toString());
 
-    await bluebirdOptions.connect(user).buy(0, 100000000, false, _getPremium);
+    await bluebirdOptions.connect(user).buy(0, false, _getPremium);
+    console.log(
+      'Fractionalised NFT token balance of user after buying call option 1 time: ',
+      (await bb20.balanceOf(user.address)).toString()
+    );
+    console.log("User's ETH balance after buying call option 1 time: ", (await user.getBalance()).toString());
+
     // One week passes
     await ethers.provider.send('evm_increaseTime', [604800]);
+    console.log('One week passes');
     // Set price on oracle
-    await mockOracle.setPrice(ethers.utils.parseEther('140'));
-    // Check balance of user erc20 token
-    console.log('Before balance: ', (await bb20.balanceOf(user.address)).toString());
+    await mockOracle.setPrice(ethers.utils.parseEther('120'));
+    console.log('Floor price of NFT increases to 120 ETH');
+    // Calculate amountETH
+    const amountETH = await bluebirdOptions.connect(user).calculateAmountETH(0);
+    console.log('AmountETH: ', amountETH.toString());
     // Try to exercise
-    await bluebirdOptions.connect(user).exercise(0);
-    console.log('After balance: ', (await bb20.balanceOf(user.address)).toString());
+    await bluebirdOptions.connect(user).exercise(0, { value: amountETH });
+    console.log(
+      'Fractionalised NFT token balance of user after exercising call option: ',
+      (await bb20.balanceOf(user.address)).toString()
+    );
+    console.log("User's ETH balance after exercising call option: ", (await user.getBalance()).toString());
   });
 });

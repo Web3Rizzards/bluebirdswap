@@ -70,6 +70,15 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         emit Redeemed(_collectionAddress, _tokenId, msg.sender);
     }
 
+    function createToken(address _collectionAddress) public {
+        require(whitelisted[_collectionAddress], "Collection not whitelisted");
+        string memory _name = concatenate("BB Fractionalized ", IERC721Metadata(_collectionAddress).name());
+        string memory _symbol = concatenate("bb", IERC721Metadata(_collectionAddress).symbol());
+        // Create new BB20 contract
+        BB20 nftToken = new BB20(_name, _symbol, address(this));
+        nftAddressToTokenAddress[_collectionAddress] = nftToken;
+    }
+
     function whitelistNFT(address _collectionAddress) external override onlyOwner {
         whitelisted[_collectionAddress] = true;
     }

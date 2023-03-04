@@ -13,11 +13,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   //   args: [],
   // });
 
-  // await deploy('Azuki', {
-  //   from: deployer,
-  //   log: true,
-  //   args: [],
-  // });
+  await deploy('Azuki', {
+    from: deployer,
+    log: true,
+    args: [],
+  });
 
   // await deploy('BAYC', {
   //   from: deployer,
@@ -25,11 +25,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   //   args: [],
   // });
 
-  // await deploy('BBYC', {
-  //   from: deployer,
-  //   log: true,
-  //   args: [],
-  // });
+  await deploy('BBYC', {
+    from: deployer,
+    log: true,
+    args: [],
+  });
   await deploy('MockOracle', {
     from: deployer,
     log: true,

@@ -26,11 +26,13 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
   let bluebirdGrinder: Deployment | null;
   let bluebirdManager: Deployment | null;
   let BBYC: Deployment | null;
+  let azuki: Deployment | null;
 
   bluebirdFactory = await deployments.getOrNull('BluebirdFactory');
   bluebirdGrinder = await deployments.getOrNull('BluebirdGrinder');
   bluebirdManager = await deployments.getOrNull('BluebirdManager');
   BBYC = await deployments.getOrNull('BBYC');
+  azuki = await deployments.getOrNull('Azuki');
 
   function getAddress(contract: Deployment | Contract | null) {
     if (contract) {
@@ -54,10 +56,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
     },
     {
       name: 'BluebirdManager.address',
-      value: getAddress(bluebirdGrinder),
-      blockNumber: getBlockNumber(bluebirdGrinder),
+      value: getAddress(bluebirdManager),
+      blockNumber: getBlockNumber(bluebirdManager),
     },
     { name: 'BBYC.address', value: getAddress(BBYC), blockNumber: getBlockNumber(BBYC) },
+    { name: 'Azuki.address', value: getAddress(azuki), blockNumber: getBlockNumber(azuki) },
   ];
 
   console.table(entries);
@@ -70,6 +73,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
     bluebird_manager_start_block: getBlockNumber(bluebirdManager),
     bbyc_address: getAddress(BBYC),
     bbyc_start_block: getBlockNumber(BBYC),
+    azuki_address: getAddress(azuki),
+    azuki_start_block: getBlockNumber(azuki),
   };
 
   // Read config file from subgraph/packages/config

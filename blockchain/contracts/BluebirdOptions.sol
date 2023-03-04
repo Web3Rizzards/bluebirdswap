@@ -211,8 +211,10 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _nftTokenPrice = _nftPrice / 1000000;
         // Get historical prices of NFT
         uint[] memory _prices = getHistoricalPrices();
+
         // Get standard deviation of NFT price
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
+
         return
             optionPricing.getOptionPrice(
                 nftOpts[_id].isPut,
@@ -266,30 +268,21 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         (uint80 _roundId, int price, , , ) = nftFeed.latestRoundData();
         prices[0] = uint(price);
         // 1 day has 24 rounds, so get past 7 days worth of prices
+        // XXX: Previoud Logic was implemented wrongly. This will fail if _roundId is less than 24
+        int _price = price;
         for (uint i = 1; i < 7; i++) {
-            (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - (24 * i)));
-            prices[i] = uint(_price);
+            console.log(i);
+            if (_roundId < i) {
+                prices[i] = uint(_price);
+            } else {
+                (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - (i)));
+                prices[i] = uint(_price);
+            }
         }
+        console.log("done");
         return prices;
     }
 
-    // /**
-    //  * @notice Returns the historical prices of NFT Mock function
-    //  * @return historical prices of NFT
-    //  */
-
-    // function getHistoricalPrices() public view returns (uint[] memory) {
-    //     // Create new price array of 7 prices
-    //     uint[] memory prices = new uint[](7);
-    //     prices[0] = 16.3 ether;
-    //     prices[1] = 15.1 ether;
-    //     prices[2] = 16.5 ether;
-    //     prices[3] = 16.2 ether;
-    //     prices[4] = 15.4 ether;
-    //     prices[5] = 16.8 ether;
-    //     prices[6] = 17.5 ether;
-    //     return prices;
-    // }
     /**
      * @notice Returns the strike prices of an epoch
      * @return uint256[] memory Array of strike prices
@@ -356,6 +349,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _premium;
         // Get historical prices
         uint[] memory _prices = getHistoricalPrices();
+ 
         // Get base IV
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
         // Get isPut

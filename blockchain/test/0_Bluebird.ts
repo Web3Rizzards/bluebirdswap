@@ -84,14 +84,21 @@ describe('BluebirdManager', function () {
   it('Should create options', async () => {
     await bluebirdGrinder.connect(user).fractionalizeNFT(bbyc.address, 1);
     await bluebirdGrinder.connect(user2).fractionalizeNFT(bbyc.address, 11);
+
     await (await bluebirdManager.createOptions(bbyc.address, mockOracle.address)).wait();
 
     expect((await bluebirdManager.getOptArray()).length).to.equal(1);
     // Get contract address of new optionsContract
     const optArray = await bluebirdManager.getOptArray();
     bluebirdOptions = (await ethers.getContractAt('BluebirdOptions', optArray[0])) as BluebirdOptions;
+
     // Write options
     await bluebirdOptions.writeOption();
+
+    let optionContract = await bluebirdOptions.nftOpts(0);
+    console.log('🚀 | it | optionContract:', optionContract);
+    console.log('strikePrice: ', optionContract.strike.toString());
+
     const liquidityProviderTime = await bluebirdOptions.liquidityProvidingTime();
     const bb20Address = await bluebirdGrinder.nftAddressToTokenAddress(bbyc.address);
     bb20 = (await ethers.getContractAt('BB20', bb20Address)) as BB20;

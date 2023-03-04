@@ -42,7 +42,7 @@ library BlackScholes {
         bytes16 X = ABDKMathQuad.fromUInt(strike);
         bytes16 T = ABDKMathQuad.div(
             ABDKMathQuad.fromUInt(timeToExpiry),
-            ABDKMathQuad.fromUInt(36500) // 365 * 10 ^ DAYS_PRECISION
+            ABDKMathQuad.fromUInt(100) // 365 * 10 ^ 2
         );
         bytes16 r = ABDKMathQuad.div(ABDKMathQuad.fromUInt(riskFreeRate), ABDKMathQuad.fromUInt(10000));
         bytes16 v = ABDKMathQuad.div(ABDKMathQuad.fromUInt(volatility), ABDKMathQuad.fromUInt(100));

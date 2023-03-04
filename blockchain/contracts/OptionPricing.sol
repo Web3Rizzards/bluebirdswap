@@ -64,14 +64,15 @@ contract OptionPricing is Ownable, IOptionPricing {
         uint256 lastPrice,
         uint256 volatility
     ) external view override returns (uint256) {
-        uint256 timeToExpiry = expiry.sub(block.timestamp).div(864);
+        //uint256 timeToExpiry = expiry.sub(block.timestamp).div(864);
+        uint256 timeToExpiry = expiry.sub(block.timestamp).mul(100);
 
         uint256 optionPrice = BlackScholes
             .calculate(
                 isPut ? 1 : 0, // 0 - Put, 1 - Call
                 lastPrice,
                 strike,
-                timeToExpiry, // Number of days to expiry mul by 100
+                timeToExpiry, // Number of seconds to expiry mul by 100
                 0,
                 volatility
             )

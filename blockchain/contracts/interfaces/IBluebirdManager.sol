@@ -80,6 +80,14 @@ interface IBluebirdManager {
     );
 
     /**
+     * @notice Emitted when new option contract is created
+     * @param _opt Address of the option contract
+     * @param _collectionAddress Address of the collection
+     * @param _nftToken Address of the bb20 token
+     */
+    event OptionContractCreated(address _opt, address _collectionAddress, address _nftToken);
+
+    /**
      * @notice Create a New Call and Put Options for the epoch
      * @param _collectionAddress Address of the NFT Collection
      * @param _nftFeedAddress Address of the NFT Oracle Feed from Chainlink

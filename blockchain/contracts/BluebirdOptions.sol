@@ -29,7 +29,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     IOptionPricing public optionPricing;
 
     // Options expiry
-    uint256 public EXPIRY = 1 days;
+    uint256 public EXPIRY = 600;
 
     // Start time of epoch
     uint256 public startTimeEpoch;
@@ -185,7 +185,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 currentId + 1,
                 epoch,
                 address(nftToken),
-                _strikePricesCall[i],
+                _strikePricesPut[i],
                 _start,
                 _start + EXPIRY
             );

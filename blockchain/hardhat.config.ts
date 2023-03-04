@@ -131,6 +131,12 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       saveDeployments: true,
     },
+    base_testnet: {
+      url: 'https://goerli.base.org',
+      chainId: 84531,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
   },
   solidity: {
     compilers: [
@@ -177,7 +183,10 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      mumbai: process.env.POLYGONSCAN_API_KEY,
+      goerli: process.env.ETHERSCAN_API_KEY,
+    },
   },
   paths: {
     sources: './contracts',

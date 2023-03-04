@@ -57,6 +57,9 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
         // Set optionExists to true
         optionExists[address(_nftToken)] = true;
+
+        // Emit event
+        emit OptionContractCreated(address(opt), address(_collectionAddress), address(_nftToken));
     }
 
     /**

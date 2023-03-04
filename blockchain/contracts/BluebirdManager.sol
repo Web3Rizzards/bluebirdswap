@@ -18,6 +18,7 @@ contract BluebirdManager is IBluebirdManager, Ownable {
     EnumerableSet.AddressSet internal optArray;
     IOptionPricing public optionPricing;
     IBluebirdGrinder public grinder;
+    mapping(address => bool) public optionExists;
 
     constructor(IOptionPricing _optionPricing, IBluebirdGrinder _grinder) {
         optionPricing = _optionPricing;
@@ -43,6 +44,7 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
         // If BB20 token was not created, create it
         require(address(_nftToken) != address(0), "NFT Token not created");
+        require(optionExists[address(_nftToken)] == false, "Options already created for this NFT");
 
         // Get current floor price of NFT from Chainlink
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);
@@ -52,6 +54,9 @@ contract BluebirdManager is IBluebirdManager, Ownable {
 
         // Add nft collection options contract to array
         optArray.add(address(opt));
+
+        // Set optionExists to true
+        optionExists[address(_nftToken)] = true;
     }
 
     /**

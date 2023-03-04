@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract BBYC is ERC721 {
     uint256 public index = 1;
 
-    constructor() ERC721("Blue Bird Yatch Club", "BBYC") {}
+    constructor() ERC721("Blue Bird Yacht Club", "BBYC") {}
 
     function mint() external {
         _safeMint(msg.sender, index);

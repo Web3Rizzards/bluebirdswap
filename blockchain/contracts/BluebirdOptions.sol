@@ -29,19 +29,17 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     IOptionPricing public optionPricing;
 
     // Options expiry
-    uint256 public EXPIRY = 5 minutes;
-
-    // Start time of buying options
-    uint256 public startTimeBuy;
+    uint256 public EXPIRY = 1 days;
 
     // Start time of epoch
     uint256 public startTimeEpoch;
 
+    uint256 public interval = 24;
     // Current epoch
     uint256 public epoch;
 
     // Time to provide liquidity
-    uint256 public liquidityProvidingTime = 2 minutes;
+    uint256 public liquidityProvidingTime = 5 minutes;
 
     // Id tracker for each strike price of options
     uint256 public currentId;
@@ -101,6 +99,14 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         EXPIRY = _expiry;
     }
 
+    /**
+     * @notice Set interval
+     * @param _interval interval of chainlink round update
+     */
+    function setInterval(uint256 _interval) external onlyOwner {
+        interval = _interval;
+    }
+
     // Internal functions
     /**
      * @notice Function to calculate strike prices
@@ -128,7 +134,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @notice Function to start epoch
      */
     function startEpoch() public {
-        require(block.timestamp > (startTimeEpoch + EXPIRY), "Epoch has not ended");
+        require(getStage() == 2, "Epoch has not ended yet");
         startTimeEpoch = block.timestamp;
         // Increment epoch
         epoch += 1;
@@ -139,9 +145,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @dev Only owner/controller should be able to trigger this
      */
     function writeOption() public onlyOwner {
-        require(block.timestamp > (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time not over yet");
-        // Initialise start time of buying options
-        startTimeBuy = block.timestamp;
+        require(getStage() == 1, "Liquidity providing time not over yet");
 
         // Get floor price of NFT
         uint256 nftPrice = getNftPrice();
@@ -193,9 +197,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         // Save strike prices
         epochToStrikePrices[epoch][false] = _strikePricesCall;
         epochToStrikePrices[epoch][true] = _strikePricesPut;
-        startEpoch();
-        console.log("Options written");
-        console.log(startTimeEpoch);
     }
 
     // View functions
@@ -211,7 +212,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _nftTokenPrice = _nftPrice / 1000000;
         // Get historical prices of NFT
         uint[] memory _prices = getHistoricalPrices();
-
         // Get standard deviation of NFT price
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
 
@@ -241,18 +241,21 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @return _stage Stage of contract
      */
     function getStage() public view returns (uint256 _stage) {
-        console.log(block.timestamp);
-        console.log(startTimeEpoch);
-        console.log(liquidityProvidingTime);
         if (block.timestamp > startTimeEpoch && block.timestamp < startTimeEpoch + liquidityProvidingTime) {
             // Liquidity providing stage
             _stage = 0;
-        } else if (block.timestamp > startTimeBuy && block.timestamp < startTimeBuy + EXPIRY) {
+            console.log("Stage 0");
+        } else if (
+            block.timestamp > startTimeEpoch + liquidityProvidingTime &&
+            block.timestamp < startTimeEpoch + liquidityProvidingTime + EXPIRY
+        ) {
             // Buying stage
             _stage = 1;
+            console.log("Stage 1");
         } else {
             // Expiry stage
             _stage = 2;
+            console.log("Stage 2");
         }
     }
 
@@ -268,18 +271,10 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         (uint80 _roundId, int price, , , ) = nftFeed.latestRoundData();
         prices[0] = uint(price);
         // 1 day has 24 rounds, so get past 7 days worth of prices
-        // XXX: Previoud Logic was implemented wrongly. This will fail if _roundId is less than 24
-        int _price = price;
         for (uint i = 1; i < 7; i++) {
-            console.log(i);
-            if (_roundId < i) {
-                prices[i] = uint(_price);
-            } else {
-                (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - (i)));
-                prices[i] = uint(_price);
-            }
+            (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - interval * (i)));
+            prices[i] = uint(_price);
         }
-        console.log("done");
         return prices;
     }
 
@@ -349,7 +344,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _premium;
         // Get historical prices
         uint[] memory _prices = getHistoricalPrices();
- 
+
         // Get base IV
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
         // Get isPut

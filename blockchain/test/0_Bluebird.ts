@@ -91,9 +91,7 @@ describe('BluebirdManager', function () {
     // Get contract address of new optionsContract
     const optArray = await bluebirdManager.getOptArray();
     bluebirdOptions = (await ethers.getContractAt('BluebirdOptions', optArray[0])) as BluebirdOptions;
-
-    // Write options
-    await bluebirdOptions.writeOption();
+    await bluebirdOptions.startEpoch();
 
     let optionContract = await bluebirdOptions.nftOpts(0);
     console.log('🚀 | it | optionContract:', optionContract);
@@ -110,8 +108,11 @@ describe('BluebirdManager', function () {
     await bluebirdOptions.connect(user2).depositETH({ value: ethers.utils.parseEther('3000') });
     console.log('User 2 deposits 3000 ETH');
     // Wait 30 seconds
-    await ethers.provider.send('evm_increaseTime', [30]);
-
+    await ethers.provider.send('evm_increaseTime', [300]);
+    // Write options
+    await bluebirdOptions.writeOption();
+    await bluebirdOptions.setInterval(1);
+    console.log(await bluebirdOptions.getHistoricalPrices());
     let _getPremium = await bluebirdOptions.getPremium(0);
     console.log(
       'Fractionalised NFT token balance of user at the start: ',
@@ -130,7 +131,7 @@ describe('BluebirdManager', function () {
     await ethers.provider.send('evm_increaseTime', [604800]);
     console.log('One week passes');
     // Set price on oracle
-    await mockOracle.setPrice(ethers.utils.parseEther('120'));
+    await mockOracle.setPrice(ethers.utils.parseEther('16.8'));
     console.log('Floor price of NFT increases to 120 ETH');
     // Calculate amountETH
     const amountETH = await bluebirdOptions.connect(user).calculateAmountETH(0);
@@ -142,5 +143,10 @@ describe('BluebirdManager', function () {
       (await bb20.balanceOf(user.address)).toString()
     );
     console.log("User's ETH balance after exercising call option: ", (await user.getBalance()).toString());
+  });
+
+  it('Should return correct info from mockOracle', async () => {
+    console.log(await mockOracle.latestRoundData());
+    console.log(await mockOracle.getRoundData(2));
   });
 });

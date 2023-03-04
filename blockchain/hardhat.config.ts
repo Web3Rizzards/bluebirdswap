@@ -81,6 +81,7 @@ module.exports = {
       chainId: 5,
       accounts: [PRIVATE_KEY_TESTNET],
       saveDeployments: true,
+      gasPrice: 52071155694,
     },
     matic: {
       url: 'https://polygon-rpc.com/',
@@ -114,6 +115,18 @@ module.exports = {
     arbitrum_testnet: {
       url: 'https://rinkeby.arbitrum.io/rpc',
       chainId: 421611,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
+    scroll_testnet: {
+      url: 'https://alpha-rpc.scroll.io/l2',
+      chainId: 534353,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
+    metis_testnet: {
+      url: 'https://goerli.gateway.metisdevops.link',
+      chainId: 599,
       accounts: [PRIVATE_KEY],
       saveDeployments: true,
     },

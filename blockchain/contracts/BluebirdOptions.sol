@@ -266,9 +266,16 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         (uint80 _roundId, int price, , , ) = nftFeed.latestRoundData();
         prices[0] = uint(price);
         // 1 day has 24 rounds, so get past 7 days worth of prices
+        // XXX: Previoud Logic was implemented wrongly. This will fail if _roundId is less than 24
+        int _price = price;
         for (uint i = 1; i < 7; i++) {
-            (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - (24 * i)));
+            console.log(i);
+            if (_roundId <= i) {
             prices[i] = uint(_price);
+            } else {
+                (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - (i)));
+                prices[i] = uint(_price);
+            }
         }
         return prices;
     }

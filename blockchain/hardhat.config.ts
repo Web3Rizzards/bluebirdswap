@@ -2,6 +2,7 @@ import '@nomicfoundation/hardhat-toolbox';
 import 'dotenv/config';
 import 'solidity-docgen';
 import 'hardhat-deploy';
+
 import { task } from 'hardhat/config';
 
 // import '@graphprotocol/hardhat-graph';
@@ -114,6 +115,18 @@ module.exports = {
     arbitrum_testnet: {
       url: 'https://rinkeby.arbitrum.io/rpc',
       chainId: 421611,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
+    scroll_testnet: {
+      url: 'https://alpha-rpc.scroll.io/l2',
+      chainId: 534353,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
+    metis_testnet: {
+      url: 'https://goerli.gateway.metisdevops.link',
+      chainId: 599,
       accounts: [PRIVATE_KEY],
       saveDeployments: true,
     },

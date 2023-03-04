@@ -37,4 +37,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   });
 };
 
-module.exports.tags = ['Mock'];
+module.exports.tags = ['Mock','All'];

@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "verify:testnet": "npx hardhat etherscan-verify --network cronos_testnet --api-url https://api-testnet.cronoscan.com",
-    "verify:mainnet": "npx hardhat etherscan-verify --network cronos_mainnet"
+    "verify:mainnet": "npx hardhat etherscan-verify --network cronos_mainnet",
+    "deploy:goerli": "npx hardhat deploy --network goerli --tags All",
+    "deploy:mumbai": "npx hardhat deploy --network mumbai --tags All",
+    "deploy:base": "npx hardhat deploy --network base --tags All",
+    "deploy:scroll": "npx hardhat deploy --network scroll_testnet --tags All",
+    "deploy:metis": "npx hardhat deploy --network metis_testnet --tags All"
   },
   "author": "",
   "license": "ISC",

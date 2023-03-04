@@ -91,4 +91,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId, network }: 
   );
 };
 
-module.exports.tags = ['Setter'];
+module.exports.tags = ['Setter','All'];

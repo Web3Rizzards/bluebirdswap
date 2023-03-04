@@ -15,4 +15,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   });
 };
 
-module.exports.tags = ['BluebirdGrinder'];
+module.exports.tags = ['BluebirdGrinder','All'];

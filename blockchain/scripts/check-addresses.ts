@@ -1,11 +1,12 @@
-import { BBYC } from '../typechain/BBYC';
-import { BluebirdManager } from '../typechain/BluebirdManager';
-import { BluebirdOptions } from '../typechain/BluebirdOptions';
-import { Azuki } from '../typechain/Azuki';
-import { BAYC } from '../typechain/BAYC';
-import { MockOracle } from '../typechain';
-import { BluebirdGrinder } from '../typechain/contracts/BluebirdGrinder';
-import { OptionPricing } from '../typechain';
+import {
+  BluebirdGrinder,
+  BBYC,
+  Azuki,
+  BluebirdManager,
+  BluebirdOptions,
+  MockOracle,
+  OptionPricing,
+} from '../typechain';
 
 import { ethers } from 'hardhat';
 

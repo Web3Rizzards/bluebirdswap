@@ -11,7 +11,8 @@ async function main() {
   // const bb20: BB20 = await ethers.getContract('BB20', signers[0]);
   const grinder: BluebirdGrinder = await ethers.getContract('BluebirdGrinder', signers[0]);
   const bbyc: BBYC = await ethers.getContract('BBYC', signers[0]);
-  const collectionAddresses = [bbyc.address];
+  const azuki: BBYC = await ethers.getContract('Azuki', signers[0]);
+  const collectionAddresses = [bbyc.address, azuki.address];
   let tokenAddresses = [];
   // Get address of BBYC token
   for (let i = 0; i < collectionAddresses.length; i++) {
@@ -19,9 +20,9 @@ async function main() {
     console.log(tokenAddresses[i]);
   }
   // Using BB20 abi, get contract at speicfic address
-  const bb20: BB20 = await ethers.getContractAt('BB20', tokenAddresses[0]);
+  const bb20: BB20 = await ethers.getContractAt('BB20', tokenAddresses[1]);
   // Approve
-  await bb20.approve('0x75594F7f6C8c63F2a3a35D4F10E5fE16582253b1', ethers.utils.parseEther('10000000'));
+  await bb20.approve('0xbDB3eF2Ad8a99994bF5067128E17f0C246A860C4', ethers.utils.parseEther('10000000'));
 }
 
 main()

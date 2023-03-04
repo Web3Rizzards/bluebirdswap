@@ -82,6 +82,7 @@ module.exports = {
       chainId: 5,
       accounts: [PRIVATE_KEY_TESTNET],
       saveDeployments: true,
+      gasPrice: 52071155694,
     },
     matic: {
       url: 'https://polygon-rpc.com/',

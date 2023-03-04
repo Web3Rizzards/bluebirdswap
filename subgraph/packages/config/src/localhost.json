@@ -5,10 +5,12 @@
   "explorer": "https://mumbai.polygonscan.com/",
   "bluebird_factory_address": "",
   "bluebird_factory_start_block": "",
-  "bluebird_manager_address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
-  "bluebird_manager_start_block": 8,
-  "bluebird_grinder_address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-  "bluebird_grinder_start_block": 7,
-  "bbyc_address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-  "bbyc_start_block": 4
+  "bluebird_manager_address": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+  "bluebird_manager_start_block": 12,
+  "bluebird_grinder_address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+  "bluebird_grinder_start_block": 11,
+  "bbyc_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "bbyc_start_block": 1,
+  "azuki_address": "",
+  "azuki_start_block": ""
 }

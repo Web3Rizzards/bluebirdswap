@@ -13,6 +13,8 @@ import { IBB20 } from "./interfaces/IBB20.sol";
 import { BluebirdMath } from "./libraries/BluebirdMath.sol";
 import { IBluebirdManager } from "./interfaces/IBluebirdManager.sol";
 
+import "hardhat/console.sol";
+
 contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     // Price feed interface
     AggregatorV3Interface internal nftFeed;
@@ -27,19 +29,17 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     IOptionPricing public optionPricing;
 
     // Options expiry
-    uint256 public EXPIRY = 5 minutes;
-
-    // Start time of buying options
-    uint256 public startTimeBuy;
+    uint256 public EXPIRY = 1 days;
 
     // Start time of epoch
     uint256 public startTimeEpoch;
 
+    uint256 public interval = 24;
     // Current epoch
     uint256 public epoch;
 
     // Time to provide liquidity
-    uint256 public liquidityProvidingTime = 2 minutes;
+    uint256 public liquidityProvidingTime = 5 minutes;
 
     // Id tracker for each strike price of options
     uint256 public currentId;
@@ -77,10 +77,8 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         bluebirdManager = IBluebirdManager(_bluebirdManager);
         optionPricing = IOptionPricing(_optionsPricing);
 
-        startTimeEpoch = block.timestamp;
         // Transfer ownership to owner
         transferOwnership(_owner);
-        startEpoch();
     }
 
     // Admin Functions
@@ -99,6 +97,14 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      */
     function setExpiry(uint256 _expiry) external onlyOwner {
         EXPIRY = _expiry;
+    }
+
+    /**
+     * @notice Set interval
+     * @param _interval interval of chainlink round update
+     */
+    function setInterval(uint256 _interval) external onlyOwner {
+        interval = _interval;
     }
 
     // Internal functions
@@ -127,9 +133,11 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     /**
      * @notice Function to start epoch
      */
-    function startEpoch() public{
-        require(block.timestamp > (startTimeEpoch + EXPIRY), "Epoch has not ended");
+    function startEpoch() public {
+        require(getStage() == 2, "Epoch has not ended yet");
         startTimeEpoch = block.timestamp;
+        // Increment epoch
+        epoch += 1;
     }
 
     /**
@@ -137,9 +145,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @dev Only owner/controller should be able to trigger this
      */
     function writeOption() public onlyOwner {
-        require(block.timestamp > (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time not over yet");
-        // Initialise start time of buying options
-        startTimeBuy = block.timestamp;
+        require(getStage() == 1, "Liquidity providing time not over yet");
 
         // Get floor price of NFT
         uint256 nftPrice = getNftPrice();
@@ -187,12 +193,10 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             // Increment current id
             currentId += 2;
         }
-        // Increment epoch
-        epoch += 1;
+
         // Save strike prices
         epochToStrikePrices[epoch][false] = _strikePricesCall;
         epochToStrikePrices[epoch][true] = _strikePricesPut;
-        startEpoch();
     }
 
     // View functions
@@ -210,6 +214,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint[] memory _prices = getHistoricalPrices();
         // Get standard deviation of NFT price
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
+
         return
             optionPricing.getOptionPrice(
                 nftOpts[_id].isPut,
@@ -233,21 +238,25 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
     /**
      * @notice Get current stage of contract
-     * @return uint256 Stage of contract
+     * @return _stage Stage of contract
      */
-    function getStage() public view returns (uint256) {
-        uint256 _stage;
+    function getStage() public view returns (uint256 _stage) {
         if (block.timestamp > startTimeEpoch && block.timestamp < startTimeEpoch + liquidityProvidingTime) {
             // Liquidity providing stage
             _stage = 0;
-        } else if (block.timestamp > startTimeBuy && block.timestamp < startTimeBuy + EXPIRY  ) {
+            console.log("Stage 0");
+        } else if (
+            block.timestamp > startTimeEpoch + liquidityProvidingTime &&
+            block.timestamp < startTimeEpoch + liquidityProvidingTime + EXPIRY
+        ) {
             // Buying stage
             _stage = 1;
-        } else{
+            console.log("Stage 1");
+        } else {
             // Expiry stage
             _stage = 2;
+            console.log("Stage 2");
         }
-        return _stage;
     }
 
     /**
@@ -260,32 +269,15 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint[] memory prices = new uint[](7);
         // Get latest round data
         (uint80 _roundId, int price, , , ) = nftFeed.latestRoundData();
-        prices[0]= uint(price);
+        prices[0] = uint(price);
         // 1 day has 24 rounds, so get past 7 days worth of prices
         for (uint i = 1; i < 7; i++) {
-            (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - (24 * i)));
+            (, int _price, , , ) = nftFeed.getRoundData(uint80(_roundId - interval * (i)));
             prices[i] = uint(_price);
         }
         return prices;
     }
 
-    // /**
-    //  * @notice Returns the historical prices of NFT Mock function
-    //  * @return historical prices of NFT
-    //  */
-
-    // function getHistoricalPrices() public view returns (uint[] memory) {
-    //     // Create new price array of 7 prices
-    //     uint[] memory prices = new uint[](7);
-    //     prices[0] = 16.3 ether;
-    //     prices[1] = 15.1 ether;
-    //     prices[2] = 16.5 ether;
-    //     prices[3] = 16.2 ether;
-    //     prices[4] = 15.4 ether;
-    //     prices[5] = 16.8 ether;
-    //     prices[6] = 17.5 ether;
-    //     return prices;
-    // }
     /**
      * @notice Returns the strike prices of an epoch
      * @return uint256[] memory Array of strike prices
@@ -302,7 +294,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      */
     function depositNftToken(uint amount) public nonReentrant {
         // Require that it is only during liquidity providing time
-        require(block.timestamp < (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time has ended");
+        require(getStage() == 0, "Liquidity providing time has ended");
         // Take NFT tokens
         require(nftToken.transferFrom(msg.sender, address(this), amount), "Incorrect amount of NFT Token sent");
 
@@ -315,7 +307,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @notice Provide liquidity by depositing ETH
      */
     function depositETH() public payable nonReentrant {
-        require(block.timestamp < (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time has ended");
+        require(getStage() == 0, "Liquidity providing time has ended");
         // Take ETH from user
         require(msg.value > 0, "Incorrect amount of ETH sent");
 
@@ -352,6 +344,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _premium;
         // Get historical prices
         uint[] memory _prices = getHistoricalPrices();
+
         // Get base IV
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
         // Get isPut

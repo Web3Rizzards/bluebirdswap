@@ -5,10 +5,12 @@
   "explorer": "https://goerli.etherscan.io/",
   "azuki_price_feed_address": "0x11BB0bf5F9473683CBC2439Ae5E7C58d5Fc44361",
   "azuki_price_feed_start_block": "7634644",
-  "bluebird_grinder_address": "0xE3641277B8450e174a2Dea656649a3A1EBcEb2BE",
-  "bluebird_grinder_start_block": 8591800,
-  "bluebird_manager_address": "0x30940E9129512fee87b847E8630F81712Cb4a225",
-  "bluebird_manager_start_block": 8593899,
-  "bbyc_address": "0x8f41BbAC1E5102De5F6595083229f96B5fEc8a79",
-  "bbyc_start_block": 8591832
+  "bluebird_grinder_address": "0x6b3e522eD05AD29d8C52f091dBC5A7f9Eec97D4e",
+  "bluebird_grinder_start_block": 8597114,
+  "bluebird_manager_address": "0x6D6Fe31F932c547AC4ec7359a64C17a4f59D9397",
+  "bluebird_manager_start_block": 8597431,
+  "bbyc_address": "0xd12C158F9CFf1a252B463F2c419Dca1f92872356",
+  "bbyc_start_block": 8597094,
+  "azuki_address": "0xE88Fc6063B09D822b12Fcab33f77e5ab6336E1c0",
+  "azuki_start_block": 8597093
 }

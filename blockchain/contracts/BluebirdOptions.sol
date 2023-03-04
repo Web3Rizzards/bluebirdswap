@@ -12,7 +12,6 @@ import { IBluebirdOptions } from "./interfaces/IBluebirdOptions.sol";
 import { IBB20 } from "./interfaces/IBB20.sol";
 import { BluebirdMath } from "./libraries/BluebirdMath.sol";
 import { IBluebirdManager } from "./interfaces/IBluebirdManager.sol";
-import "hardhat/console.sol";
 
 contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     // Price feed interface
@@ -40,7 +39,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     uint256 public epoch;
 
     // Time to provide liquidity
-    uint256 public liquidityProvidingTime = 30 seconds;
+    uint256 public liquidityProvidingTime = 2 minutes;
 
     // Id tracker for each strike price of options
     uint256 public currentId;
@@ -134,7 +133,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         require(block.timestamp > (startTimeEpoch + liquidityProvidingTime), "Liquidity providing time has ended");
         startTimeEpoch = block.timestamp;
         epochEnded = false;
-        console.log("Epoch started");
     }
 
     /**
@@ -169,12 +167,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
             // Write put options
             nftOpts[currentId + 1] = Option(_strikePricesPut[i], _start + EXPIRY, amountToWritePut, true);
-            console.log("Strike price Call: ", _strikePricesCall[i]);
-            console.log("Call option Id: ", currentId);
-            console.log("Strike price Put: ", _strikePricesPut[i]);
-            console.log("Put option Id: ", currentId + 1);
-            // Increment current id
-            currentId += 2;
 
             // Emit events for individual strike prices
             bluebirdManager.emitCallOptionCreatedEvent(
@@ -195,6 +187,9 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 _start,
                 _start + EXPIRY
             );
+
+            // Increment current id
+            currentId += 2;
         }
         // Increment epoch
         epoch += 1;
@@ -299,13 +294,11 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     /**
      * @notice Buy an option based on `_id`
      * @param _id Index of the option
+     * @param _amount Amount of options to buy
      */
-    function buy(uint256 _id) external payable nonReentrant {
+    function buy(uint256 _id, uint256 _amount) external payable nonReentrant {
         require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
-        // Buy amount is equal to 1/5 of the total amount of options
-        uint256 _amount = nftOpts[_id].amount / 5;
-        console.log("Amount of options to buy: ", _amount / 1 ether);
-        console.log("Max buy for call options: ", maxBuyCall / 1 ether);
+        // Get isPut
         bool _isPut = nftOpts[_id].isPut;
 
         // Set max buy
@@ -339,16 +332,11 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
             _premium = optionPricing.getOptionPrice(false, _expiry, _strike, nftTokenPrice, _baseIv);
         }
 
-        console.log("Premium: ", _premium);
         // Record amount of options bought by user
         userToOptionIdToAmount[msg.sender][_id] += _amount / 1 ether;
         //Transfer premium payment from buyer to protocol
         uint256 _amountTokens = _premium / nftTokenPrice;
-        console.log("NFT token price: ", nftTokenPrice);
-        console.log("Amount of tokens to transfer: ", _amountTokens);
         require(nftToken.transferFrom(msg.sender, address(this), _amountTokens), "Premium payment failed");
-        console.log("Msg.value: ", msg.value);
-        console.log("Premium: ", _premium);
         // Calculate extra amount of ETH to send to buyer
         uint256 _extraAmount = msg.value - _premium;
         // Send extra amount of ETH to buyer
@@ -390,7 +378,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
                 _profit = true;
                 // Call buyers pay strike price * amount to protocol
                 _amountETH = calculateAmountETH(_id);
-                console.log("Amount of ETH to send to protocol: %s", _amountETH);
                 require(msg.value == _amountETH, "Incorrect amount of ETH sent to buy NFT Token");
                 // Transfer from protocol to user NFT token
                 require(

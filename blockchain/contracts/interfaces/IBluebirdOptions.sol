@@ -18,11 +18,12 @@ interface IBluebirdOptions {
     /**
      * @notice Buy an option
      * @param _id ID of the option
+     * @param _amount Amount of lots to buy
      * @dev Option must have started
      * @dev Option must not have expired
      * @dev `_amount` must be less than or equal to the amount of lots available
      */
-    function buy(uint256 _id) external payable;
+    function buy(uint256 _id, uint256 _amount) external payable;
 
     /**
      * @notice Claim profits, if any

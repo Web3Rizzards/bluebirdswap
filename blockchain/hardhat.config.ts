@@ -1,6 +1,7 @@
 import '@nomicfoundation/hardhat-toolbox';
 import 'dotenv/config';
 import 'solidity-docgen';
+import 'hardhat-deploy';
 import { task } from 'hardhat/config';
 
 // import '@graphprotocol/hardhat-graph';

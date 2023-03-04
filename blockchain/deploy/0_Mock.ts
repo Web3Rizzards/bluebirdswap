@@ -13,23 +13,23 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   //   args: [],
   // });
 
-  await deploy('Azuki', {
-    from: deployer,
-    log: true,
-    args: [],
-  });
-
-  await deploy('BAYC', {
-    from: deployer,
-    log: true,
-    args: [],
-  });
-
-  // await deploy('MockOracle', {
+  // await deploy('Azuki', {
   //   from: deployer,
   //   log: true,
-  //   args: [ethers.utils.parseEther('100'), 18, 'Mock Oracle'],
+  //   args: [],
   // });
+
+  // await deploy('BAYC', {
+  //   from: deployer,
+  //   log: true,
+  //   args: [],
+  // });
+
+  await deploy('MockOracle', {
+    from: deployer,
+    log: true,
+    args: [ethers.utils.parseEther('13.65'), 18, 'Mock Oracle'],
+  });
 };
 
 module.exports.tags = ['Mock'];

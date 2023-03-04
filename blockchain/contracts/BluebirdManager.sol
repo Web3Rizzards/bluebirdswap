@@ -42,7 +42,7 @@ contract BluebirdManager is IBluebirdManager, Ownable {
         IBB20 _nftToken = grinder.getTokenFromCollection(_collectionAddress);
 
         // If BB20 token was not created, create it
-        require(address(_nftToken) != address(0), "NFT Token not created");
+        require(address(_nftToken) == address(0), "NFT Token not created");
 
         // Get current floor price of NFT from Chainlink
         AggregatorV3Interface _nftFeed = AggregatorV3Interface(_nftFeedAddress);

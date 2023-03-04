@@ -33,7 +33,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   await deploy('MockOracle', {
     from: deployer,
     log: true,
-    args: [ethers.utils.parseEther('13.65'), 18, 'Mock Oracle'],
+    args: [ethers.utils.parseEther('10'), 18, 'Mock Oracle'],
   });
 };
 

@@ -6,9 +6,9 @@ dataSources:
     kind: ethereum/contract
     network: goerli
     source:
-      address: "0xDc9bed60Bb580F4601a10974934f1eAcBc8Ac409"
+      address: "0x6D6Fe31F932c547AC4ec7359a64C17a4f59D9397"
       abi: BluebirdManager
-      startBlock: 8591802
+      startBlock: 8597431
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -34,9 +34,9 @@ dataSources:
     kind: ethereum/contract
     network: goerli
     source:
-      address: "0xE3641277B8450e174a2Dea656649a3A1EBcEb2BE"
+      address: "0x6b3e522eD05AD29d8C52f091dBC5A7f9Eec97D4e"
       abi: BluebirdGrinder
-      startBlock: 8591800
+      startBlock: 8597114
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -58,9 +58,9 @@ dataSources:
     kind: ethereum/contract
     network: goerli
     source:
-      address: "0x8f41BbAC1E5102De5F6595083229f96B5fEc8a79"
+      address: "0xd12C158F9CFf1a252B463F2c419Dca1f92872356"
       abi: ERC721
-      startBlock: 8591832
+      startBlock: 8597094
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -74,3 +74,23 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/mappings/bbyc.ts
+  - name: Azuki
+    kind: ethereum/contract
+    network: goerli
+    source:
+      address: "0xE88Fc6063B09D822b12Fcab33f77e5ab6336E1c0"
+      abi: ERC721
+      startBlock: 8597093
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: ERC721
+          file: ../../node_modules/@bluebird/subgraph-abis/src/721.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mappings/azuki.ts

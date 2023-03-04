@@ -8,7 +8,8 @@ contract MockOracle is AggregatorV3Interface {
     uint8 public decimals;
     string public description;
     uint256 public version = 1;
-
+    uint80 public roundId = 1;
+    event AnswerUpdated(int256 indexed current, uint256 indexed roundId, uint256 updatedAt);
     constructor(int256 _price, uint8 _decimals, string memory _description) {
         price = _price;
         decimals = _decimals;
@@ -37,5 +38,7 @@ contract MockOracle is AggregatorV3Interface {
 
     function setPrice(int256 _price) public {
         price = _price;
+        emit AnswerUpdated(price, roundId, block.timestamp);
+        roundId++;
     }
 }

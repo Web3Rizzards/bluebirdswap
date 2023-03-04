@@ -1,7 +1,7 @@
 import '@nomicfoundation/hardhat-toolbox';
-import 'hardhat-deploy';
 import 'dotenv/config';
-
+import 'solidity-docgen';
+import 'hardhat-deploy';
 import { task } from 'hardhat/config';
 
 // import '@graphprotocol/hardhat-graph';
@@ -22,7 +22,6 @@ task('new:wallet', 'Generate New Wallet', async (taskArgs, hre) => {
   console.log('PK: ', wallet._signingKey().privateKey);
   console.log('Address: ', wallet.address);
 });
-
 // Setup Default Values
 let PRIVATE_KEY;
 if (process.env.PRIVATE_KEY) {

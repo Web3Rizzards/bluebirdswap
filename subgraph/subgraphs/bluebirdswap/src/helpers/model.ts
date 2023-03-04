@@ -54,7 +54,6 @@ export function getToken(contract: Address, tokenId: BigInt): Token {
     token.collection = collection.id;
     token.name = `${collection.name} #${tokenId.toString()}`;
     token.tokenId = tokenId;
-    token.save();
   }
 
   return token;

@@ -10,6 +10,7 @@
     "create-local": "graph create --node http://localhost:8020/ web3rizzards/pricefeed",
     "remove-local": "graph remove --node http://localhost:8020/ web3rizzards/pricefeed",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 web3rizzards/pricefeed",
+    "deploy:dev": "yarn --cwd ../../packages/constants prepare:goerli && mustache ../../node_modules/@bluebird/subgraph-config/src/goerli.json template.yaml > subgraph.yaml && graph codegen && graph build && graph deploy --studio chainlink-nft-floor-price",
     "prepare:local": "yarn --cwd ../../packages/constants prepare:local && mustache ../../node_modules/@bluebird/subgraph-config/src/localhost.json template.yaml > subgraph.yaml",
     "prepare:dev": "yarn --cwd ../../packages/constants prepare:goerli && mustache ../../node_modules/@bluebird/subgraph-config/src/goerli.json template.yaml > subgraph.yaml",
     "test": "graph test"

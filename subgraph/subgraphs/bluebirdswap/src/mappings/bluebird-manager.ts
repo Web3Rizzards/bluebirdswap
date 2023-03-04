@@ -1,12 +1,12 @@
 import {
+  Bought,
   CallOptionCreated,
-  Claimed,
+  Exercised,
   PutOptionCreated,
 } from "../../generated/BluebirdManager/BluebirdManager";
 import { Option, Trade } from "../../generated/schema";
 
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Bought } from "./../../generated/BluebirdManager/BluebirdManager";
 
 /**
  * Event is fired when user purchases option contracts
@@ -18,7 +18,7 @@ export function handleBought(event: Bought): void {
   let tradeId =
     event.params._user.toHexString() +
     "-" +
-    event.params._contractAddress.toString() +
+    event.params._contractAddress.toHexString() +
     "-" +
     event.params._optionId.toString();
 
@@ -91,13 +91,13 @@ export function handlePutOptionCreated(event: PutOptionCreated): void {
  * Event is fired when user claims the rewards (if any) of a trade
  * @param event
  */
-export function handleClaimed(event: Claimed): void {
+export function handleExercised(event: Exercised): void {
   let tradeId =
     event.params._user.toHexString() +
     "-" +
     event.params._contractAddress.toString() +
     "-" +
-    event.params._order.toString();
+    event.params._id.toString();
   let trade = Trade.load(tradeId);
 
   if (trade) {

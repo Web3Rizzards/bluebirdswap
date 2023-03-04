@@ -7,11 +7,6 @@
                 "type": "address"
             },
             {
-                "internalType": "address",
-                "name": "_controller",
-                "type": "address"
-            },
-            {
                 "internalType": "contract IBluebirdGrinder",
                 "name": "_grinder",
                 "type": "address"
@@ -50,20 +45,8 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "_strikePrice",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
                 "name": "_premium",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "bool",
-                "name": "_isPut",
-                "type": "bool"
             },
             {
                 "indexed": false,
@@ -76,12 +59,6 @@
                 "internalType": "uint256",
                 "name": "_epoch",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "_nftToken",
-                "type": "address"
             }
         ],
         "name": "Bought",
@@ -154,7 +131,7 @@
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "_order",
+                "name": "_id",
                 "type": "uint256"
             },
             {
@@ -162,9 +139,15 @@
                 "internalType": "uint256",
                 "name": "_profits",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "_profit",
+                "type": "bool"
             }
         ],
-        "name": "Claimed",
+        "name": "Exercised",
         "type": "event"
     },
     {
@@ -236,19 +219,6 @@
         "type": "event"
     },
     {
-        "inputs": [],
-        "name": "controller",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
@@ -290,18 +260,8 @@
             },
             {
                 "internalType": "uint256",
-                "name": "_strikePrice",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
                 "name": "_premium",
                 "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "_isPut",
-                "type": "bool"
             },
             {
                 "internalType": "uint256",
@@ -312,11 +272,6 @@
                 "internalType": "uint256",
                 "name": "_epoch",
                 "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_nftToken",
-                "type": "address"
             }
         ],
         "name": "emitBoughtEvent",
@@ -381,16 +336,21 @@
             },
             {
                 "internalType": "uint256",
-                "name": "_order",
+                "name": "_id",
                 "type": "uint256"
             },
             {
                 "internalType": "uint256",
-                "name": "_profits",
+                "name": "_pnl",
                 "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "_profit",
+                "type": "bool"
             }
         ],
-        "name": "emitClaimedEvent",
+        "name": "emitExerciseEvent",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

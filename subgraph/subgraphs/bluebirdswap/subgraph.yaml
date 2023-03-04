@@ -4,11 +4,11 @@ schema:
 dataSources:
   - name: BluebirdManager
     kind: ethereum/contract
-    network: localhost
+    network: goerli
     source:
-      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+      address: "0xDc9bed60Bb580F4601a10974934f1eAcBc8Ac409"
       abi: BluebirdManager
-      startBlock: 6
+      startBlock: 8591802
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -21,24 +21,22 @@ dataSources:
         - name: BluebirdManager
           file: ../../node_modules/@bluebird/subgraph-abis/src/BluebirdManager.json
       eventHandlers:
-        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,bool,uint256,uint256,address)
+        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,uint256)
           handler: handleBought
         - event: CallOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
           handler: handleCallOptionCreated
-        - event: Claimed(indexed address,indexed address,indexed uint256,uint256)
-          handler: handleClaimed
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
+        - event: Exercised(indexed address,indexed address,indexed uint256,uint256,bool)
+          handler: handleExercised
         - event: PutOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
-          handler: handleOptionCreated
+          handler: handlePutOptionCreated
       file: ./src/mappings/bluebird-manager.ts
   - name: BluebirdGrinder
     kind: ethereum/contract
-    network: localhost
+    network: goerli
     source:
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+      address: "0xE3641277B8450e174a2Dea656649a3A1EBcEb2BE"
       abi: BluebirdGrinder
-      startBlock: 5
+      startBlock: 8591800
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -58,11 +56,11 @@ dataSources:
       file: ./src/mappings/bluebird-grinder.ts
   - name: BBYC
     kind: ethereum/contract
-    network: localhost
+    network: goerli
     source:
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      address: "0x8f41BbAC1E5102De5F6595083229f96B5fEc8a79"
       abi: ERC721
-      startBlock: 2
+      startBlock: 8591832
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

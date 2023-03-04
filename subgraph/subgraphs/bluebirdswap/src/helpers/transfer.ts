@@ -22,9 +22,6 @@ function handleTransfer(
 ): void {
   let token = getToken(contract, tokenId);
 
-  let tokenInstance = Token.load(token.id);
-
-  tokenInstance = new Token(token.id);
-  tokenInstance.owner = to;
-  tokenInstance.save();
+  token.owner = to;
+  token.save();
 }

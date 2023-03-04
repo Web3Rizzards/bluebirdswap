@@ -7,7 +7,7 @@ type Collection @entity(immutable: true) {
   id: ID!
   contract: Bytes!
   name: String!
-  tokens: Token!
+  tokens: Token
 }
 
 # Token Entity

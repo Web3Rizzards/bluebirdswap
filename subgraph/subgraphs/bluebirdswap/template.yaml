@@ -21,16 +21,14 @@ dataSources:
         - name: BluebirdManager
           file: {{{ abis }}}/BluebirdManager.json
       eventHandlers:
-        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,bool,uint256,uint256,address)
+        - event: Bought(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,uint256)
           handler: handleBought
         - event: CallOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
           handler: handleCallOptionCreated
-        - event: Claimed(indexed address,indexed address,indexed uint256,uint256)
-          handler: handleClaimed
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
+        - event: Exercised(indexed address,indexed address,indexed uint256,uint256,bool)
+          handler: handleExercised
         - event: PutOptionCreated(indexed address,indexed uint256,uint256,address,uint256,uint256,uint256)
-          handler: handleOptionCreated
+          handler: handlePutOptionCreated
       file: ./src/mappings/bluebird-manager.ts
   - name: BluebirdGrinder
     kind: ethereum/contract

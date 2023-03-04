@@ -10,6 +10,7 @@
     "create-local": "graph create --node http://localhost:8020/ web3rizzards/bluebirdswap",
     "remove-local": "graph remove --node http://localhost:8020/ web3rizzards/bluebirdswap",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 web3rizzards/bluebirdswap",
+    "deploy:dev": "yarn --cwd ../../packages/constants prepare:goerli && mustache ../../node_modules/@bluebird/subgraph-config/src/goerli.json template.yaml > subgraph.yaml && graph codegen && graph build && graph deploy --studio bluebird-swap-goerli",
     "prepare:local": "yarn --cwd ../../packages/constants prepare:local && mustache ../../node_modules/@bluebird/subgraph-config/src/localhost.json template.yaml > subgraph.yaml",
     "prepare:dev": "yarn --cwd ../../packages/constants prepare:mumbai && mustache ../../node_modules/@bluebird/subgraph-config/src/mumbai.json template.yaml > subgraph.yaml",
     "test": "graph test"

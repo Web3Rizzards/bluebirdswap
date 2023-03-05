@@ -137,6 +137,12 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       saveDeployments: true,
     },
+    mantle_testnet: {
+      url: 'https://rpc.testnet.mantle.xyz',
+      chainId: 5001,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
   },
   solidity: {
     compilers: [

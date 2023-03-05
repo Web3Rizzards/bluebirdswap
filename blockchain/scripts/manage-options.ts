@@ -10,7 +10,7 @@ async function main() {
   const grinder: BluebirdGrinder = await ethers.getContract('BluebirdGrinder', signers[0]);
   const oracle: MockOracle = await ethers.getContract('MockOracle', signers[0]);
   const bbyc: BBYC = await ethers.getContract('BBYC', signers[0]);
-  const azuki: Azuki = await ethers.getContract('Azuki', signers[0]);
+  //const azuki: Azuki = await ethers.getContract('Azuki', signers[0]);
   let nftFeed = '0x9F6d70CDf08d893f0063742b51d3E9D1e18b7f74';
   // 1 time off
   // Minting
@@ -18,7 +18,7 @@ async function main() {
   // await azuki.mint();
 
   // // Approve
-  // await bbyc.approve(grinder.address, 4);
+  // await bbyc.approve(grinder.address, 1);
   // await azuki.approve(grinder.address, 5);
 
   // // Grinder
@@ -26,24 +26,24 @@ async function main() {
   // await grinder.whitelistNFT(azuki.address);
 
   // // Grind
-  // await grinder.fractionalizeNFT(bbyc.address, 4);
+  //await grinder.fractionalizeNFT(bbyc.address, 1);
   // await grinder.fractionalizeNFT(azuki.address, 5);
 
-  let add = await grinder.nftAddressToTokenAddress(azuki.address);
-  const bb20: BB20 = await ethers.getContractAt('BB20', add, signers[0]);
+  // let add = await grinder.nftAddressToTokenAddress(azuki.address);
+  // const bb20: BB20 = await ethers.getContractAt('BB20', add, signers[0]);
   // Manager
-  ///await manager.createOptions(bbyc.address, oracle.address);
+  // await manager.createOptions(bbyc.address, oracle.address);
   // await manager.createOptions(azuki.address, nftFeed);
-  // let optArr = await manager.getOptArray();
+  //let optArr = await manager.getOptArray();
   // // // // Get options contract at address
-  const options: BluebirdOptions = await ethers.getContractAt('BluebirdOptions', optArr[1], signers[0]);
+  //const options: BluebirdOptions = await ethers.getContractAt('BluebirdOptions', optArr[0], signers[0]);
 
   // await options.setLiquidityProvidingTime(100);
-  await options.setInterval(1);
+  //await options.setInterval(1);
 
   // Options
   //await options.startEpoch();
-  //await bb20.approve(options.address, ethers.utils.parseEther('100222234'));
+  // await bb20.approve(options.address, ethers.utils.parseEther('100222234'));
   // await options.depositNftToken(ethers.utils.parseEther('714'));
   // await options.depositETH({ value: ethers.utils.parseEther('0.0001') });
   //await options.writeOption();

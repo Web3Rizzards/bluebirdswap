@@ -12,20 +12,44 @@ import "./interfaces/IBluebirdGrinder.sol";
 import "./utils/SetUtils.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
+/// @title BluebirdManager - Manager contracts for Bluebird Options individual contracts
+
 contract BluebirdManager is IBluebirdManager, Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using SetUtils for EnumerableSet.AddressSet;
+    /**
+     * @notice Array of all options contract addresses
+     */
     EnumerableSet.AddressSet internal optArray;
+
+    /**
+     * @notice Option Pricing Contract
+     */
     IOptionPricing public optionPricing;
+
+    /**
+     * @notice Bluebird Grinder Contract
+     */
     IBluebirdGrinder public grinder;
+
+    /**
+     * @notice Mapping of NFT token address to boolean to check if options have been created
+     */
     mapping(address => bool) public optionExists;
 
+    /**
+     * @notice Constructor for Bluebird Manager
+     * @param _optionPricing Option Pricing Contract
+     * @param _grinder Bluebird Grinder Contract
+     */
     constructor(IOptionPricing _optionPricing, IBluebirdGrinder _grinder) {
         optionPricing = _optionPricing;
         grinder = _grinder;
     }
 
-    // Modifier to check if caller is options contract
+    /**
+     * @notice Modifier to check if msg.sender is an Options Contract
+     */
     modifier onlyOptions() {
         require(
             optArray.contains(msg.sender) || msg.sender == address(this),
@@ -37,6 +61,7 @@ contract BluebirdManager is IBluebirdManager, Ownable {
     /**
      * @notice Create a Put and Call Options for a specified collection for the current epoch
      * @param _collectionAddress Collection Address
+     * @param _nftFeedAddress Chainlink Feed Address
      */
     function createOptions(address _collectionAddress, address _nftFeedAddress) public onlyOwner {
         // Check if BB20 token was created

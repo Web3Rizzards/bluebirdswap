@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-// Import LinkTokenInterface and AggregatorV3Interface
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -13,57 +12,101 @@ import { IBB20 } from "./interfaces/IBB20.sol";
 import { BluebirdMath } from "./libraries/BluebirdMath.sol";
 import { IBluebirdManager } from "./interfaces/IBluebirdManager.sol";
 
-import "hardhat/console.sol";
-
+/// @title BluebirdOptions - Individual options contract for each NFT collection
+/// @dev Only can be issued by the BluebirdManager
 contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
-    // Price feed interface
+    /**
+     * @notice Price feed interface used for getting the latest price
+     */
     AggregatorV3Interface internal nftFeed;
 
-    // Fractionalized NFT token
+    /**
+     * @notice Fractionalised NFT Token
+     */
     IERC20 public nftToken;
 
-    // Bluebird Manager
+    /**
+     * @notice Bluebird Manager contract
+     */
     IBluebirdManager public bluebirdManager;
 
-    // Option Pricing
+    /**
+     * @notice Option pricing contract
+     */
     IOptionPricing public optionPricing;
 
-    // Options expiry
+    /**
+     * @notice Expiry time of options in seconds
+     */
     uint256 public EXPIRY = 600;
 
-    // Start time of epoch
+    /**
+     * @notice Start time of epoch in seconds
+     */
     uint256 public startTimeEpoch;
 
+    /**
+     * @notice Interval of chainlink round update
+     */
     uint256 public interval = 24;
-    // Current epoch
+
+    /**
+     * @notice Current epoch number
+     */
     uint256 public epoch;
 
-    // Time to provide liquidity
+    /**
+     * @notice Amount of time in which market makers can provide liquidity
+     */
     uint256 public liquidityProvidingTime = 5 minutes;
 
-    // Id tracker for each strike price of options
+    /**
+     * @notice Current Id of options
+     */
     uint256 public currentId;
 
-    // Max amount of call options that can be bought currently
+    /**
+     * @notice Maximum amount of options that a user can buy for calls
+     */
     uint256 public maxBuyCall;
 
-    // Max amount of put options that can be bought currently
+    /**
+     * @notice Maximum amount of options that a user can buy for puts
+     */
     uint256 public maxBuyPut;
 
-    // Mapping to track liquidity providers' deposits
+    /**
+     * @notice Mapping of user to amount of NFT tokens or ETH deposited to providing liquidity
+     */
     mapping(address => mapping(uint256 => uint256)) public userDeposits;
 
-    // Mapping to track each strike price of options
+    /**
+     * @notice Mapping to track each option
+     */
     mapping(uint256 => Option) public nftOpts;
 
-    // Mapping of user to option id to amount bought
+    /**
+     * @notice Mapping of user to option id to amount of options bought
+     */
     mapping(address => mapping(uint256 => uint256)) public userToOptionIdToAmount;
-
-    // Mapping which checks if current id has been exercised
+    /**
+     *@notice Mapping which checks if current id has been exercised
+     */
     mapping(address => mapping(uint256 => bool)) public exercised;
-    // Mapping of epoch to isPut to strike prices
+
+    /**
+     * @notice Mapping of epoch to isPut to strike prices
+     */
     mapping(uint256 => mapping(bool => uint256[])) public epochToStrikePrices;
 
+    /**
+     * @notice Constructor of Bluebird Options
+     * @param _nftFeed Price feed of NFT
+     * @param _nftToken Fractionalised NFT Token
+     * @param _bluebirdManager Bluebird Manager contract
+     * @param _optionsPricing Option pricing contract
+     * @param _owner Owner of contract
+     */
     constructor(
         AggregatorV3Interface _nftFeed,
         IBB20 _nftToken,
@@ -244,24 +287,21 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         if (block.timestamp > startTimeEpoch && block.timestamp < startTimeEpoch + liquidityProvidingTime) {
             // Liquidity providing stage
             _stage = 0;
-            console.log("Stage 0");
         } else if (
             block.timestamp > startTimeEpoch + liquidityProvidingTime &&
             block.timestamp < startTimeEpoch + liquidityProvidingTime + EXPIRY
         ) {
             // Buying stage
             _stage = 1;
-            console.log("Stage 1");
         } else {
             // Expiry stage
             _stage = 2;
-            console.log("Stage 2");
         }
     }
 
     /**
      * @notice Returns the historical prices of NFT
-     * @return historical prices of NFT
+     * @return Historical prices of NFT
      */
 
     function getHistoricalPrices() public view returns (uint[] memory) {
@@ -321,7 +361,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @param _id Index of the option
      * @param _amount Amount of options to buy
      */
-    function buy(uint256 _id, uint256 _amount) external payable nonReentrant {
+    function buy(uint256 _id, uint256 _amount) external nonReentrant {
         require(nftOpts[_id].expiry > block.timestamp, "Option is expired and cannot be bought");
         // Get isPut
         bool _isPut = nftOpts[_id].isPut;
@@ -363,20 +403,13 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         //Transfer premium payment from buyer to protocol
         uint256 _amountTokens = _premium / nftTokenPrice;
         require(nftToken.transferFrom(msg.sender, address(this), _amountTokens), "Premium payment failed");
-        // Calculate extra amount of ETH to send to buyer
-        uint256 _extraAmount = msg.value - _premium;
-        // Send extra amount of ETH to buyer
-        if (_extraAmount > 0) {
-            (bool success, ) = payable(msg.sender).call{ value: _extraAmount }("");
-            require(success, "Insufficient amount of ETH sent to user");
-        }
 
         // Emit event
         bluebirdManager.emitBoughtEvent(address(this), msg.sender, _id, _amount, _premium, block.timestamp, epoch);
     }
 
     /**
-     * @notice Calculate amount of ETH to be received when exercising an option
+     * @notice Calculate amount of ETH to be received when exercising an option, for calls only
      * @param _id Index of the option
      * @return Amount of ETH to be received
      */

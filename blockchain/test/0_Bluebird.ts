@@ -120,7 +120,7 @@ describe('BluebirdManager', function () {
     );
     console.log("User's ETH balance at the start: ", (await user.getBalance()).toString());
 
-    await bluebirdOptions.connect(user).buy(0, ethers.utils.parseEther('200'), { value: _getPremium });
+    await bluebirdOptions.connect(user).buy(0, ethers.utils.parseEther('200'));
     console.log(
       'Fractionalised NFT token balance of user after buying call option 1 time: ',
       (await bb20.balanceOf(user.address)).toString()
@@ -131,7 +131,7 @@ describe('BluebirdManager', function () {
     await ethers.provider.send('evm_increaseTime', [604800]);
     console.log('One week passes');
     // Set price on oracle
-    await mockOracle.setPrice(ethers.utils.parseEther('16.8'));
+    await mockOracle.setPrice(ethers.utils.parseEther('20'));
     console.log('Floor price of NFT increases to 120 ETH');
     // Calculate amountETH
     const amountETH = await bluebirdOptions.connect(user).calculateAmountETH(0);

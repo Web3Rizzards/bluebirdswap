@@ -9,19 +9,39 @@ import "./utils/SetUtils.sol";
 import "./interfaces/IBluebirdGrinder.sol";
 import { BB20 } from "./BB20.sol";
 
+/// @title BluebirdGrinder - Contract to fractionalize NFTs into BB20 tokens
+
 contract BluebirdGrinder is IBluebirdGrinder, Ownable {
     using EnumerableSet for EnumerableSet.UintSet;
     using SetUtils for EnumerableSet.UintSet;
-    // 1 NFT = 1 million BB20 tokens
+    /**
+     * @notice Amount of BB20 tokens to mint per NFT
+     * @dev 1 NFT = 1 million BB20 tokens
+     */
     uint256 public constant FRACTIONALISED_AMOUNT = 1000000 ether;
 
-    // Mapping of collection address to enumerable token Ids
+    /**
+     * @notice Mapping of collection address to enumerable token Ids
+     */
     mapping(address => EnumerableSet.UintSet) internal collectionToTokenIds;
+
+    /**
+     * @notice Mapping of NFT collection address to BB20 token address
+     */
     mapping(address => BB20) public nftAddressToTokenAddress;
+
+    /**
+     * @notice Mapping of collection address to boolean to check if collection is whitelisted
+     */
     mapping(address => bool) public whitelisted;
 
     constructor() {}
 
+    /**
+     * @notice Function to fractionalize NFTs into BB20 tokens
+     * @param _collectionAddress Address of NFT collection
+     * @param _tokenId Token Id of NFT to fractionalize
+     */
     function fractionalizeNFT(address _collectionAddress, uint256 _tokenId) external override {
         require(_collectionAddress != address(0), "Invalid collection address");
         require(whitelisted[_collectionAddress], "Collection not whitelisted");
@@ -47,6 +67,11 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         emit Fractionalised(_collectionAddress, address(nftToken), _tokenId, msg.sender);
     }
 
+    /**
+     * @notice Function to reconstruct NFTs from BB20 tokens
+     * @param _collectionAddress Address of NFT collection
+     * @param _tokenId Token Id of NFT to reconstruct
+     */
     function reconstructNFT(address _collectionAddress, uint256 _tokenId) external override {
         require(_collectionAddress != address(0), "Invalid collection address");
         // Require tokenId exists in enumerable set
@@ -70,23 +95,26 @@ contract BluebirdGrinder is IBluebirdGrinder, Ownable {
         emit Redeemed(_collectionAddress, _tokenId, msg.sender);
     }
 
-    function createToken(address _collectionAddress) public {
-        require(whitelisted[_collectionAddress], "Collection not whitelisted");
-        string memory _name = concatenate("BB Fractionalized ", IERC721Metadata(_collectionAddress).name());
-        string memory _symbol = concatenate("bb", IERC721Metadata(_collectionAddress).symbol());
-        // Create new BB20 contract
-        BB20 nftToken = new BB20(_name, _symbol, address(this));
-        nftAddressToTokenAddress[_collectionAddress] = nftToken;
-    }
-
+    /**
+     * @notice Function to whitelist NFT collection
+     * @param _collectionAddress Address of NFT collection
+     */
     function whitelistNFT(address _collectionAddress) external override onlyOwner {
         whitelisted[_collectionAddress] = true;
     }
 
+    /**
+     * @notice Function to get token address from collection address
+     * @param _collectionAddress Address of NFT collection
+     */
     function getTokenFromCollection(address _collectionAddress) external view override returns (IBB20) {
         return nftAddressToTokenAddress[_collectionAddress];
     }
 
+    /**
+     * @notice Function to get all token ids from collection address that are in the contract
+     * @param _collectionAddress Address of NFT collection
+     */
     function getIds(address _collectionAddress) external view returns (uint256[] memory) {
         return collectionToTokenIds[_collectionAddress].toArray();
     }

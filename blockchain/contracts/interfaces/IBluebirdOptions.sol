@@ -13,6 +13,7 @@ interface IBluebirdOptions {
         uint expiry; // Unix timestamp of expiration time
         uint amount; // Amount of tokens option allows buyer to purchase
         bool isPut; // True if option is a put, false if call
+        uint80 roundId; // Chainlink round ID
     }
 
     /**
@@ -41,6 +42,8 @@ interface IBluebirdOptions {
 
     /**
      * @notice Get premium based on option id
+     * @param _id ID of the option
+     * @param _amount Amount of lots to buy
      */
-    function getPremium(uint256 _id) external view returns (uint256);
+    function getPremium(uint256 _id, uint256 _amount) external view returns (uint256);
 }

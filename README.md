@@ -1,12 +1,74 @@
 # BluebirdSwap Fractionalised NFT Decentralised Options Trading - Solidity API Docs
 
 ## Deployments
-
+Goerli Testnet
 | Name            | Description                                                                                           | Addresses                               |
 | --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| BluebirdManager | Manage the creation of option smart contracts                                                         | 0x...                       |
-| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x...                     |
-| BluebirdOptions | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0x... |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0xcd32229b3D60990C75597009D8398367bCd77D8E                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x503F5104361D4e0be9874D90d24Fdfd3c88e248F                     |
+| BluebirdOptions - Azuki | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0x6e42ed27C4470aD83250Fb6947F4AfBCd6bac98e |
+| BluebirdOptions - BBYC | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0x98aa30Ce2f37B230A065B5b1E39cF447122F675c |
+| OptionPricing | Contract that holds the logic to price options with BlackScholes | 0x31dd4FD29b4e2DeeE184E2F05a179c922804A261 |
+| MockOracle | Mock Chainlink oracle in place of any NFT price feeds that are not available on that specific chain | 0x3b2B8eD017Df41113E592fff03ab7F7Ca98d118F |
+| Azuki | Mock Azuki contract, used in conjunction with actual Chainlink price feed oracle                                              | 0xE88Fc6063B09D822b12Fcab33f77e5ab6336E1c0                       |
+| BBYC | Blue Bird Yacht Club contract, used as our sample NFT in this protocol                                                 | 0xd12C158F9CFf1a252B463F2c419Dca1f92872356                     |
+| bbBBYC| Fractionalised BBYC nft tokens | 0x2e02E42872550329ec835c99a00ad9903d72a1DC |
+| bbAzuki | Fractionalised Azuki nft tokens| 0x525bb6caFeD1b97A654b250bb0a962578A8d2cf6 |
+
+Base Testnet
+| Name            | Description                                                                                           | Addresses                               |
+| --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0xA960261A0926F02822543561f3ae0f86839b2Ea2                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x4aB59d8D18298261560aFcAf780E17Dc69B877d0                     |
+| BluebirdOptions - BBYC | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0xC9885Bfbc06a723d9C0627a4140B27810C1C62AB |
+| OptionPricing | Contract that holds the logic to price options with BlackScholes | 0xc2a33a404e1fd76eddbF841A9327CD0e1BB4353e |
+| MockOracle | Mock Chainlink oracle in place of any NFT price feeds that are not available on that specific chain | 0xfA3422b99515d78D889C0a8Ce866A8444A589fB8 |
+| BBYC | Blue Bird Yacht Club contract, used as our sample NFT in this protocol                                                 | 0x07A583000b1C86b159e065D16c05fbD5A14f92A8                     |
+| bbBBYC| Fractionalised BBYC nft tokens | 0x52E25E5911b2003d4cfe572f374e20d8FF313F5E |
+
+Mumbai Testnet
+| Name            | Description                                                                                           | Addresses                               |
+| --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0xbF0f6C964656D9493B831E72606E4b192AE82cA2                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x7A5A68f723000b6F99863464d1C3483a4A1A549c                     |
+| BluebirdOptions - BBYC | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0x547b6c1A306f341CBc46766f73D5523dA8E476F5 |
+| OptionPricing | Contract that holds the logic to price options with BlackScholes | 0xd79EEB728Fe4Fb7229Fa30D0e15A5C91a1D63C63 |
+| MockOracle | Mock Chainlink oracle in place of any NFT price feeds that are not available on that specific chain | 0x3F7f1ACDe99F262A9200D220Bb1839bDAbDaA8a3 |
+| BBYC | Blue Bird Yacht Club contract, used as our sample NFT in this protocol                                                 | 0x77f359C9e1F5a1264B931fca77523d99a7807b50                     |
+| bbBBYC| Fractionalised BBYC nft tokens | 0x7321aE89644aBD8b69e68479E5b59ada5FccDc80 |
+
+Mantle Testnet
+| Name            | Description                                                                                           | Addresses                               |
+| --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0xA960261A0926F02822543561f3ae0f86839b2Ea2                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x4aB59d8D18298261560aFcAf780E17Dc69B877d0                     |
+| BluebirdOptions - BBYC | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0xC9885Bfbc06a723d9C0627a4140B27810C1C62AB |
+| OptionPricing | Contract that holds the logic to price options with BlackScholes | 0xc2a33a404e1fd76eddbF841A9327CD0e1BB4353e |
+| MockOracle | Mock Chainlink oracle in place of any NFT price feeds that are not available on that specific chain | 0xfA3422b99515d78D889C0a8Ce866A8444A589fB8 |
+| BBYC | Blue Bird Yacht Club contract, used as our sample NFT in this protocol                                                 | 0x07A583000b1C86b159e065D16c05fbD5A14f92A8                     |
+| bbBBYC| Fractionalised BBYC nft tokens | 0x52E25E5911b2003d4cfe572f374e20d8FF313F5E |
+
+Metis Testnet
+| Name            | Description                                                                                           | Addresses                               |
+| --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0x9c84b49574DBBe735B1ade34DBdA06C8e055eb36                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0xeBCbEe60876e4481DcFBAE8A2983ebBc49AD624c                     |
+| BluebirdOptions - BBYC | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0xd73df9049DE5e04a1Bb03893e0ee266f0544bf66 |
+| OptionPricing | Contract that holds the logic to price options with BlackScholes | 0x1588996B29513f00C63c979A1b28b1454B1639F6 |
+| MockOracle | Mock Chainlink oracle in place of any NFT price feeds that are not available on that specific chain | 0x3ca839f1E7E456464e2CEF5bd43E4e64aBFcFBff |
+| BBYC | Blue Bird Yacht Club contract, used as our sample NFT in this protocol                                                 | 0xA960261A0926F02822543561f3ae0f86839b2Ea2                     |
+| bbBBYC| Fractionalised BBYC nft tokens | 0x92aB41E00310077603254D0D7b4B0BD9Ef60C996 |
+
+Scroll Alpha Testnet
+| Name            | Description                                                                                           | Addresses                               |
+| --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0xB7FC58dA365D6E328362B5799ec8E9a7Ae13cA07                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x05CE628bFfB7be936bB659274210AFeefd454Dff                     |
+| BluebirdOptions - BBYC | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0x45947030980cE2594b766F138F3D0174f0265cB9 |
+| OptionPricing | Contract that holds the logic to price options with BlackScholes | 0xe41A822fA1F2Cb9823bd4654830CE8c59754537f |
+| MockOracle | Mock Chainlink oracle in place of any NFT price feeds that are not available on that specific chain | 0x7A5A68f723000b6F99863464d1C3483a4A1A549c |
+| BBYC | Blue Bird Yacht Club contract, used as our sample NFT in this protocol                                                 | 0xd79EEB728Fe4Fb7229Fa30D0e15A5C91a1D63C63                     |
+| bbBBYC| Fractionalised BBYC nft tokens | 0x3A29F2D351D56d5717dbc77fFca6749ee4A17Bbb |
 
 ## BB20
 

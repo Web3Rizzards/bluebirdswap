@@ -1,5 +1,13 @@
 # BluebirdSwap Fractionalised NFT Decentralised Options Trading - Solidity API Docs
 
+## Deployments
+
+| Name            | Description                                                                                           | Addresses                               |
+| --------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| BluebirdManager | Manage the creation of option smart contracts                                                         | 0x...                       |
+| BluebirdGrinder | Fractionalize NFT and Reconstruct NFT from fragments                                                  | 0x...                     |
+| BluebirdOptions | Contract that holds the logic for peer-to-pool automated options writing for a single NFT collection. | 0x... |
+
 ## BB20
 
 _Only can be issued by the BluebirdGrinder_
@@ -30,11 +38,11 @@ Constructor of the BB20 contract
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _name | string | Name of the token |
-| _symbol | string | Symbol of the token |
-| _grinder | address | Address of the BluebirdGrinder contract |
+| Name      | Type    | Description                             |
+| --------- | ------- | --------------------------------------- |
+| \_name    | string  | Name of the token                       |
+| \_symbol  | string  | Symbol of the token                     |
+| \_grinder | address | Address of the BluebirdGrinder contract |
 
 ### mint
 
@@ -48,10 +56,10 @@ _Only can be called by the BluebirdGrinder_
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _receipient | address | Address of the receipient |
-| _amount | uint256 | Amount of tokens to mint |
+| Name         | Type    | Description               |
+| ------------ | ------- | ------------------------- |
+| \_receipient | address | Address of the receipient |
+| \_amount     | uint256 | Amount of tokens to mint  |
 
 ### burn
 
@@ -65,11 +73,11 @@ _Only can be called by the BluebirdGrinder_
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name   | Type    | Description              |
+| ------ | ------- | ------------------------ |
 | amount | uint256 | Amount of tokens to burn |
 
-### _isFactory
+### \_isFactory
 
 ```solidity
 function _isFactory() internal view
@@ -129,10 +137,10 @@ Function to fractionalize NFTs into BB20 tokens
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _collectionAddress | address | Address of NFT collection |
-| _tokenId | uint256 | Token Id of NFT to fractionalize |
+| Name                | Type    | Description                      |
+| ------------------- | ------- | -------------------------------- |
+| \_collectionAddress | address | Address of NFT collection        |
+| \_tokenId           | uint256 | Token Id of NFT to fractionalize |
 
 ### reconstructNFT
 
@@ -144,10 +152,10 @@ Function to reconstruct NFTs from BB20 tokens
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _collectionAddress | address | Address of NFT collection |
-| _tokenId | uint256 | Token Id of NFT to reconstruct |
+| Name                | Type    | Description                    |
+| ------------------- | ------- | ------------------------------ |
+| \_collectionAddress | address | Address of NFT collection      |
+| \_tokenId           | uint256 | Token Id of NFT to reconstruct |
 
 ### whitelistNFT
 
@@ -159,9 +167,9 @@ Function to whitelist NFT collection
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _collectionAddress | address | Address of NFT collection |
+| Name                | Type    | Description               |
+| ------------------- | ------- | ------------------------- |
+| \_collectionAddress | address | Address of NFT collection |
 
 ### getTokenFromCollection
 
@@ -173,9 +181,9 @@ Function to get token address from collection address
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _collectionAddress | address | Address of NFT collection |
+| Name                | Type    | Description               |
+| ------------------- | ------- | ------------------------- |
+| \_collectionAddress | address | Address of NFT collection |
 
 ### getIds
 
@@ -187,9 +195,9 @@ Function to get all token ids from collection address that are in the contract
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _collectionAddress | address | Address of NFT collection |
+| Name                | Type    | Description               |
+| ------------------- | ------- | ------------------------- |
+| \_collectionAddress | address | Address of NFT collection |
 
 ### concatenate
 
@@ -201,10 +209,10 @@ Returns a concatenated string of a and b
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _a | string | string a |
-| _b | string | string b |
+| Name | Type   | Description |
+| ---- | ------ | ----------- |
+| \_a  | string | string a    |
+| \_b  | string | string b    |
 
 ## BluebirdManager
 
@@ -250,10 +258,10 @@ Constructor for Bluebird Manager
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _optionPricing | contract IOptionPricing | Option Pricing Contract |
-| _grinder | contract IBluebirdGrinder | Bluebird Grinder Contract |
+| Name            | Type                      | Description               |
+| --------------- | ------------------------- | ------------------------- |
+| \_optionPricing | contract IOptionPricing   | Option Pricing Contract   |
+| \_grinder       | contract IBluebirdGrinder | Bluebird Grinder Contract |
 
 ### onlyOptions
 
@@ -273,10 +281,10 @@ Create a Put and Call Options for a specified collection for the current epoch
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _collectionAddress | address | Collection Address |
-| _nftFeedAddress | address | Chainlink Feed Address |
+| Name                | Type    | Description            |
+| ------------------- | ------- | ---------------------- |
+| \_collectionAddress | address | Collection Address     |
+| \_nftFeedAddress    | address | Chainlink Feed Address |
 
 ### getOptArray
 
@@ -296,15 +304,15 @@ Proxy function to emit event from options contract
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _contractAddress | address | Address of options contract |
-| _optionId | uint256 | Option ID |
-| _epoch | uint256 | Epoch |
-| _nftToken | address | NFT Token Address |
-| _strikePrice | uint256 | Strike Price |
-| _start | uint256 | Start Time |
-| _expiry | uint256 | Expiry Time |
+| Name              | Type    | Description                 |
+| ----------------- | ------- | --------------------------- |
+| \_contractAddress | address | Address of options contract |
+| \_optionId        | uint256 | Option ID                   |
+| \_epoch           | uint256 | Epoch                       |
+| \_nftToken        | address | NFT Token Address           |
+| \_strikePrice     | uint256 | Strike Price                |
+| \_start           | uint256 | Start Time                  |
+| \_expiry          | uint256 | Expiry Time                 |
 
 ### emitPutOptionCreatedEvent
 
@@ -316,15 +324,15 @@ Proxy function to emit event from options contract
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _contractAddress | address | Address of options contract |
-| _optionId | uint256 | Option ID |
-| _epoch | uint256 | Epoch |
-| _nftToken | address | NFT Token Address |
-| _strikePrice | uint256 | Strike Price |
-| _start | uint256 | Start Time |
-| _expiry | uint256 | Expiry Time |
+| Name              | Type    | Description                 |
+| ----------------- | ------- | --------------------------- |
+| \_contractAddress | address | Address of options contract |
+| \_optionId        | uint256 | Option ID                   |
+| \_epoch           | uint256 | Epoch                       |
+| \_nftToken        | address | NFT Token Address           |
+| \_strikePrice     | uint256 | Strike Price                |
+| \_start           | uint256 | Start Time                  |
+| \_expiry          | uint256 | Expiry Time                 |
 
 ### emitBoughtEvent
 
@@ -336,15 +344,15 @@ Proxy function to emit event from options contract
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _contractAddress | address | Address of options contract |
-| _user | address | User Address |
-| _order | uint256 | Order ID |
-| _amount | uint256 | Amount |
-| _premium | uint256 | Premium |
-| _timestamp | uint256 | Timestamp |
-| _epoch | uint256 | Epoch |
+| Name              | Type    | Description                 |
+| ----------------- | ------- | --------------------------- |
+| \_contractAddress | address | Address of options contract |
+| \_user            | address | User Address                |
+| \_order           | uint256 | Order ID                    |
+| \_amount          | uint256 | Amount                      |
+| \_premium         | uint256 | Premium                     |
+| \_timestamp       | uint256 | Timestamp                   |
+| \_epoch           | uint256 | Epoch                       |
 
 ### emitExerciseEvent
 
@@ -356,13 +364,13 @@ Proxy function to emit event from options contract
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _contractAddress | address | Address of options contract |
-| _user | address | User Address |
-| _id | uint256 | Order ID |
-| _pnl | uint256 | PnL |
-| _profit | bool | Profit |
+| Name              | Type    | Description                 |
+| ----------------- | ------- | --------------------------- |
+| \_contractAddress | address | Address of options contract |
+| \_user            | address | User Address                |
+| \_id              | uint256 | Order ID                    |
+| \_pnl             | uint256 | PnL                         |
+| \_profit          | bool    | Profit                      |
 
 ## BluebirdOptions
 
@@ -514,13 +522,13 @@ Constructor of Bluebird Options
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _nftFeed | contract AggregatorV3Interface | Price feed of NFT |
-| _nftToken | contract IBB20 | Fractionalised NFT Token |
-| _bluebirdManager | address | Bluebird Manager contract |
-| _optionsPricing | contract IOptionPricing | Option pricing contract |
-| _owner | address | Owner of contract |
+| Name              | Type                           | Description               |
+| ----------------- | ------------------------------ | ------------------------- |
+| \_nftFeed         | contract AggregatorV3Interface | Price feed of NFT         |
+| \_nftToken        | contract IBB20                 | Fractionalised NFT Token  |
+| \_bluebirdManager | address                        | Bluebird Manager contract |
+| \_optionsPricing  | contract IOptionPricing        | Option pricing contract   |
+| \_owner           | address                        | Owner of contract         |
 
 ### setLiquidityProvidingTime
 
@@ -532,9 +540,9 @@ Set liquidity providing time
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _liquidityProvidingTime | uint256 | Time to provide liquidity |
+| Name                     | Type    | Description               |
+| ------------------------ | ------- | ------------------------- |
+| \_liquidityProvidingTime | uint256 | Time to provide liquidity |
 
 ### setExpiry
 
@@ -546,9 +554,9 @@ Set expiry
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _expiry | uint256 | Expiry of options |
+| Name     | Type    | Description       |
+| -------- | ------- | ----------------- |
+| \_expiry | uint256 | Expiry of options |
 
 ### setInterval
 
@@ -560,11 +568,11 @@ Set interval
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _interval | uint256 | interval of chainlink round update |
+| Name       | Type    | Description                        |
+| ---------- | ------- | ---------------------------------- |
+| \_interval | uint256 | interval of chainlink round update |
 
-### _calculateStrikePrices
+### \_calculateStrikePrices
 
 ```solidity
 function _calculateStrikePrices(uint256 _floorPrice, bool _isPut) internal pure returns (uint256[])
@@ -574,10 +582,10 @@ Function to calculate strike prices
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _floorPrice | uint256 | Floor price of NFT |
-| _isPut | bool | Whether option is put or call |
+| Name         | Type    | Description                   |
+| ------------ | ------- | ----------------------------- |
+| \_floorPrice | uint256 | Floor price of NFT            |
+| \_isPut      | bool    | Whether option is put or call |
 
 ### startEpoch
 
@@ -607,9 +615,9 @@ Get premium of an option
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _id | uint256 | Id of contract |
+| Name | Type    | Description    |
+| ---- | ------- | -------------- |
+| \_id | uint256 | Id of contract |
 
 ### getNftPrice
 
@@ -621,9 +629,9 @@ Returns the price of NFT from oracle
 
 #### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | uint256 | Price of NFT |
+| Name | Type    | Description  |
+| ---- | ------- | ------------ |
+| [0]  | uint256 | Price of NFT |
 
 ### getStage
 
@@ -635,9 +643,9 @@ Get current stage of contract
 
 #### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _stage | uint256 | Stage of contract |
+| Name    | Type    | Description       |
+| ------- | ------- | ----------------- |
+| \_stage | uint256 | Stage of contract |
 
 ### getHistoricalPrices
 
@@ -649,9 +657,9 @@ Returns the historical prices of NFT
 
 #### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | uint256[] | Historical prices of NFT |
+| Name | Type      | Description              |
+| ---- | --------- | ------------------------ |
+| [0]  | uint256[] | Historical prices of NFT |
 
 ### getStrikes
 
@@ -663,9 +671,9 @@ Returns the strike prices of an epoch
 
 #### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | uint256[] | uint256[] memory Array of strike prices |
+| Name | Type      | Description                             |
+| ---- | --------- | --------------------------------------- |
+| [0]  | uint256[] | uint256[] memory Array of strike prices |
 
 ### depositNftToken
 
@@ -677,8 +685,8 @@ Provide liquidity by depositing NFT tokens
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name   | Type    | Description                     |
+| ------ | ------- | ------------------------------- |
 | amount | uint256 | Amount of NFT tokens to deposit |
 
 ### depositETH
@@ -699,10 +707,10 @@ Buy an option based on `_id`
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _id | uint256 | Index of the option |
-| _amount | uint256 | Amount of options to buy |
+| Name     | Type    | Description              |
+| -------- | ------- | ------------------------ |
+| \_id     | uint256 | Index of the option      |
+| \_amount | uint256 | Amount of options to buy |
 
 ### calculateAmountETH
 
@@ -714,15 +722,15 @@ Calculate amount of ETH to be received when exercising an option, for calls only
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _id | uint256 | Index of the option |
+| Name | Type    | Description         |
+| ---- | ------- | ------------------- |
+| \_id | uint256 | Index of the option |
 
 #### Return Values
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| [0] | uint256 | Amount of ETH to be received |
+| Name | Type    | Description                  |
+| ---- | ------- | ---------------------------- |
+| [0]  | uint256 | Amount of ETH to be received |
 
 ### exercise
 
@@ -734,9 +742,9 @@ Exercise an option based on `_id`
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| _id | uint256 | Id of option to exercise |
+| Name | Type    | Description              |
+| ---- | ------- | ------------------------ |
+| \_id | uint256 | Id of option to exercise |
 
 ## IBB20
 
@@ -766,7 +774,6 @@ Burn `amount` tokens and decreasing the total supply.
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name   | Type    | Description              |
+| ------ | ------- | ------------------------ |
 | amount | uint256 | Amount of tokens to burn |
-

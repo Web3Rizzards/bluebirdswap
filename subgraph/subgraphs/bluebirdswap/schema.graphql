@@ -7,7 +7,8 @@ type Collection @entity(immutable: true) {
   id: ID!
   contract: Bytes!
   name: String!
-  tokens: Token
+  symbol: String!
+  tokens: [Token!]! @derivedFrom(field: "collection")
 }
 
 # Token Entity
@@ -33,6 +34,8 @@ type Trade @entity {
 
 type Option @entity(immutable: true) {
   id: ID! # {ContractAddress}-{OptionId}
+  optionId: BigInt!
+  collection: Collection!
   token: Token!
   epoch: BigInt!
   strikePrice: BigInt!

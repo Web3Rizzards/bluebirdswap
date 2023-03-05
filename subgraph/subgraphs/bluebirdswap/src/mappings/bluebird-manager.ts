@@ -58,6 +58,8 @@ export function handleCallOptionCreated(event: CallOptionCreated): void {
   if (!option) {
     option = new Option(optionId);
     option.token = event.params._nftToken.toHexString();
+    option.collection = event.params._contractAddress.toHexString();
+    option.optionId = event.params._optionId;
     option.epoch = event.params._epoch;
     option.strikePrice = event.params._strikePrice;
     option.isPut = false;
@@ -78,6 +80,8 @@ export function handlePutOptionCreated(event: PutOptionCreated): void {
   if (!option) {
     option = new Option(optionId);
     option.token = event.params._nftToken.toHexString();
+    option.collection = event.params._contractAddress.toHexString();
+    option.optionId = event.params._optionId;
     option.epoch = event.params._epoch;
     option.strikePrice = event.params._strikePrice;
     option.isPut = true;

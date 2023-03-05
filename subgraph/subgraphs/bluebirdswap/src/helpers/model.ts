@@ -8,6 +8,7 @@ import { getAddressId } from ".";
 function createCollection(
   contract: Address,
   name: string,
+  symbol: string,
   standard: string,
   suffix: string = ""
 ): void {
@@ -18,14 +19,19 @@ function createCollection(
     collection = new Collection(id);
 
     collection.contract = contract;
+    collection.symbol = symbol;
     collection.name = name;
 
     collection.save();
   }
 }
 
-export function createErc721Collection(contract: Address, name: string): void {
-  createCollection(contract, name, "ERC721");
+export function createErc721Collection(
+  contract: Address,
+  name: string,
+  symbol: string
+): void {
+  createCollection(contract, name, symbol, "ERC721");
 }
 
 export function getCollection(id: string): Collection {

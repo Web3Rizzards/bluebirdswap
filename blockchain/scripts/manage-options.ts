@@ -29,27 +29,57 @@ async function main() {
   //await grinder.fractionalizeNFT(bbyc.address, 1);
   // await grinder.fractionalizeNFT(azuki.address, 5);
 
-  // let add = await grinder.nftAddressToTokenAddress(azuki.address);
-  // const bb20: BB20 = await ethers.getContractAt('BB20', add, signers[0]);
+  let add = await grinder.nftAddressToTokenAddress(bbyc.address);
+  const bb20: BB20 = await ethers.getContractAt('BB20', add, signers[0]);
   // Manager
   // await manager.createOptions(bbyc.address, oracle.address);
   // await manager.createOptions(azuki.address, nftFeed);
-  //let optArr = await manager.getOptArray();
+  let optArr = await manager.getOptArray();
   // // // // Get options contract at address
-  //const options: BluebirdOptions = await ethers.getContractAt('BluebirdOptions', optArr[0], signers[0]);
+  const options: BluebirdOptions = await ethers.getContractAt('BluebirdOptions', optArr[1], signers[0]);
 
-  // await options.setLiquidityProvidingTime(100);
-  //await options.setInterval(1);
+  await options.setLiquidityProvidingTime(120);
+  await options.setExpiry(300);
+  //await options.setLiquidityProvidingTime(100);
+  // await options.setInterval(1);
 
+  //await options.depositNftToken(ethers.utils.parseEther('52132'));
+  // await oracle.setPrice(ethers.utils.parseEther('16.5'));
+  while (true) {
+    // For calls only
+    console.log('Epoch: ', (await options.epoch()).toString());
+    console.log('Expiry: ', (await options.EXPIRY()).toString());
+    console.log('Stage:', (await options.getStage()).toString());
+    console.log('Liquidity providing time: ', (await options.liquidityProvidingTime()).toString());
+    console.log('Starting epoch.. ');
+    await options.startEpoch();
+    // Sleep for 145 seconds
+    await new Promise((r) => setTimeout(r, 165000));
+    console.log('Writing option..');
+    await options.writeOption();
+    // Sleep for 215 seconds
+    await new Promise((r) => setTimeout(r, 115000));
+    console.log('Setting price to 19.5 to simulate price increase..');
+    await oracle.setPrice(ethers.utils.parseEther('19.5'));
+    // Sleep for 30 seconds
+    await new Promise((r) => setTimeout(r, 150000));
+    console.log('Resetting price...');
+    await oracle.setPrice(ethers.utils.parseEther('16.5'));
+    // Sleep for 60 seconds
+    await new Promise((r) => setTimeout(r, 60000));
+  }
+
+  //await options.writeOption();
+  //await options.writeOption();
   // Options
   //await options.startEpoch();
   // await bb20.approve(options.address, ethers.utils.parseEther('100222234'));
-  // await options.depositNftToken(ethers.utils.parseEther('714'));
+  // await options.depositNftToken(ethers.utils.parseEther('32134'));
   // await options.depositETH({ value: ethers.utils.parseEther('0.0001') });
   //await options.writeOption();
   // let premium = await options.getPremium(2);
-  //await options.buy(12, ethers.utils.parseEther('230'));
-  //await options.exercise(0);
+  //await options.buy(28, ethers.utils.parseEther('240'));
+  // await options.exercise(14);
   //console.log(bb20.address);
 }
 

@@ -12,6 +12,8 @@ import { IBB20 } from "./interfaces/IBB20.sol";
 import { BluebirdMath } from "./libraries/BluebirdMath.sol";
 import { IBluebirdManager } from "./interfaces/IBluebirdManager.sol";
 
+import "hardhat/console.sol";
+
 /// @title BluebirdOptions - Individual options contract for each NFT collection
 /// @dev Only can be issued by the BluebirdManager
 contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
@@ -38,7 +40,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     /**
      * @notice Expiry time of options in seconds
      */
-    uint256 public EXPIRY = 600;
+    uint256 public EXPIRY = 300;
 
     /**
      * @notice Start time of epoch in seconds
@@ -58,12 +60,17 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
     /**
      * @notice Amount of time in which market makers can provide liquidity
      */
-    uint256 public liquidityProvidingTime = 5 minutes;
+    uint256 public liquidityProvidingTime = 2 minutes;
 
     /**
      * @notice Current Id of options
      */
     uint256 public currentId;
+
+    /**
+     * @notice Initial round id for chainlink price feed
+     */
+    uint80 public initialId;
 
     /**
      * @notice Maximum amount of options that a user can buy for calls
@@ -192,6 +199,8 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
 
         // Get floor price of NFT
         uint256 nftPrice = getNftPrice();
+        (uint80 roundId, , , , ) = nftFeed.latestRoundData();
+
         // Get token price of fractionalised NFT
         uint256 nftTokenPrice = nftPrice / 1000000;
 
@@ -208,10 +217,10 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         // Loop through strike prices and write options
         for (uint i = 0; i < _strikePricesCall.length; i++) {
             // Write call options
-            nftOpts[currentId] = Option(_strikePricesCall[i], _start + EXPIRY, amountToWriteCall, false);
+            nftOpts[currentId] = Option(_strikePricesCall[i], _start + EXPIRY, amountToWriteCall, false, roundId);
 
             // Write put options
-            nftOpts[currentId + 1] = Option(_strikePricesPut[i], _start + EXPIRY, amountToWritePut, true);
+            nftOpts[currentId + 1] = Option(_strikePricesPut[i], _start + EXPIRY, amountToWritePut, true, roundId);
 
             // Emit events for individual strike prices
             bluebirdManager.emitCallOptionCreatedEvent(
@@ -248,7 +257,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
      * @notice Get premium of an option
      * @param _id Id of contract
      */
-    function getPremium(uint256 _id) public view returns (uint256) {
+    function getPremium(uint256 _id, uint256 _amount) public view returns (uint256) {
         // Get price of NFT
         uint256 _nftPrice = getNftPrice();
         // Get price of NFT token
@@ -259,6 +268,7 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _baseIv = BluebirdMath.computeStandardDeviation(_prices);
 
         return
+            (_amount / 1 ether) *
             optionPricing.getOptionPrice(
                 nftOpts[_id].isPut,
                 nftOpts[_id].expiry,
@@ -393,9 +403,13 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         uint256 _strike = nftOpts[_id].strike;
         // Get premium based on option type
         if (_isPut) {
-            _premium = optionPricing.getOptionPrice(true, _expiry, _strike, nftTokenPrice, _baseIv);
+            _premium =
+                (_amount / 1 ether) *
+                optionPricing.getOptionPrice(true, _expiry, _strike, nftTokenPrice, _baseIv);
         } else {
-            _premium = optionPricing.getOptionPrice(false, _expiry, _strike, nftTokenPrice, _baseIv);
+            _premium =
+                (_amount / 1 ether) *
+                optionPricing.getOptionPrice(false, _expiry, _strike, nftTokenPrice, _baseIv);
         }
 
         // Record amount of options bought by user
@@ -403,7 +417,6 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         //Transfer premium payment from buyer to protocol
         uint256 _amountTokens = _premium / nftTokenPrice;
         require(nftToken.transferFrom(msg.sender, address(this), _amountTokens), "Premium payment failed");
-
         // Emit event
         bluebirdManager.emitBoughtEvent(address(this), msg.sender, _id, _amount, _premium, block.timestamp, epoch);
     }
@@ -426,7 +439,9 @@ contract BluebirdOptions is IBluebirdOptions, Ownable, ReentrancyGuard {
         require(!exercised[msg.sender][_id], "Option has already been exercised");
         require(nftOpts[_id].expiry < block.timestamp, "Option is not expired");
         // Get price of NFT token
-        uint256 nftTokenPrice = getNftPrice() / 1000000;
+        // Get closing roundId
+        (, int _price, , , ) = nftFeed.getRoundData(nftOpts[_id].roundId + uint80(interval * 7));
+        uint256 nftTokenPrice = uint(_price) / 1000000;
         // Initialise amount of ETH to send to protocol or send to user
         uint256 _amountETH;
         // Initialise profit boolean to determine if user has profit
